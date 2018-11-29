@@ -25,7 +25,7 @@
 CXX ?= $(CROSS_COMPILE)g++
 
 CPPFLAGS = -I/usr/include/gtest
-CXXFLAGS = -Wall -Werror -g -O0
+CXXFLAGS = -Wall -Werror -g -O0 -std=c++11
 
 CPPSRC = $(shell find * -name '*-test.cpp')
 
