@@ -12,8 +12,7 @@ addons:
       - libgtest-dev
 
 before_script:
-  - sudo sh -c 'cd /usr/src/gtest && cmake -DBUILD_SHARED_LIBS=ON && make && cp *.so /usr/lib/'
-  - sudo sh -c 'cd /usr/src/gtest && make clean && rm -Rf CMakeCache.txt CMakeFiles/ && cmake && make && cp *.a /usr/lib/'
+  - sh .scripts/build-and-install-libgtest-libraries.sh
 
 script:
   - make
