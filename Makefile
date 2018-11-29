@@ -31,9 +31,9 @@ CPPSRC = $(shell find * -name '*-test.cpp')
 
 EXE = $(CPPSRC:.cpp=)
 
-all: check
+all: $(EXE)
 
-%: %.cpp Makefile
+%-test: %-test.cpp %.cpp Makefile
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $< -lgtest -lgtest_main
 
 clean:
