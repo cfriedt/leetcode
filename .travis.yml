@@ -1,5 +1,7 @@
 language: cpp
 
+sudo: required
+
 before_install:
 - apt-get update -qq
 
