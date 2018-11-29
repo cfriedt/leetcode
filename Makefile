@@ -22,16 +22,16 @@
 
 .PHONY: all clean check
 
-CXX = $(CROSS_COMPILE)g++
+CXX ?= $(CROSS_COMPILE)g++
 
 CPPFLAGS = -I/usr/include/gtest
-CXXFLAGS = -Wall -Werror -g -O0
+CXXFLAGS = -Wall -Werror -g -O0 -std=c++11
 
-CPPSRC = $(shell find * -name '*.cpp')
+CPPSRC = $(shell find * -name '*-test.cpp')
 
 EXE = $(CPPSRC:.cpp=)
 
-all: $(EXE)
+all: check
 
 %: %.cpp Makefile
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $< -lgtest -lgtest_main
@@ -56,4 +56,4 @@ check: $(EXE)
 		exit 0; \
 	else \
 		exit 1; \
-	fi 
+	fi

@@ -7,6 +7,12 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
+    packages:
+      - cmake
+      - libgtest-dev
+
+before_script:
+  - sudo sh .scripts/build-and-install-libgtest-libraries.sh
 
 script:
   - make
