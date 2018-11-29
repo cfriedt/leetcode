@@ -1,0 +1,12 @@
+language: cpp
+
+before_install:
+	- apt-get update -qq
+
+install:
+	- apt install -y libgtest-dev
+	- sh -c 'cd /usr/src/gtest && cmake -DBUILD_SHARED_LIBS=ON && make && cp *.so /usr/lib/'
+	- sh -c 'cd /usr/src/gtest && make clean && rm -Rf CMakeCache.txt CMakeFiles/ && cmake && make && cp *.a /usr/lib/'
+
+script:
+	- make check
