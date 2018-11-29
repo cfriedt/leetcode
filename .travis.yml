@@ -12,7 +12,7 @@ addons:
       - libgtest-dev
 
 before_script:
-  - sh .scripts/build-and-install-libgtest-libraries.sh
+  - sudo sh .scripts/build-and-install-libgtest-libraries.sh
 
 script:
   - make
