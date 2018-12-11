@@ -41,3 +41,11 @@ TEST( MinimumWindowSubstring, Test_aa_aa ) {
 	string actual_string = Solution().minWindow(s, t);
 	EXPECT_EQ( actual_string, expected_string );
 }
+
+TEST( MinimumWindowSubstring, Test_bbaa_aba ) {
+	string s( "bbaa" );
+	string t( "aba" );
+	string expected_string( "baa" );
+	string actual_string = Solution().minWindow(s, t);
+	EXPECT_EQ( actual_string, expected_string );
+}

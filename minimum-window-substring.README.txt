@@ -1,0 +1,64 @@
+This is a slightly deceptive problem when first encountered.
+Outwardly, it doesn't *seem* like it's a difficult problem until you try to solve it.
+
+However, it is *extremely* important in this day and age, particularly when
+you consider that it is exactly like another problem, not necessarily on
+leetcode.com, but encountered *billions* of times daily.
+That problem is, namely, the following:
+
+Given a page of text (i.e. words separated by whitespace in string form), and another
+string containing a number of search terms separated by whitespace, find the shortest
+window of text containing all search terms. This is categorically Google.
+
+Input: S = "ADOBECODEBANC", T = "ABC"
+Output: "BANC"
+
+The solution that I would consider "brute force" is the one that I thought of first,
+which is the following:
+                              shortest
+i    A_i    B_i    C_i     window (pos, len)
+--------------------------------------------
+0     0
+..
+3     0      3
+..
+5     0      3      5       (0,6)
+..
+9     0      9      5       (0,6) ** shortest window not updated, because (0,10) is longer
+10    10     9      5       (0,6) ** shortest window not updated, because (5,6) is longer
+                                     N.B. We should probably set out some assumptions
+                                          - only one shortest window exists (i.e. there is only 1 correct answer)
+                                          - all items in T are unique.
+                                     N.B. Some shortcuts
+                                          - if window.length() == T.length(), short circuit return window
+                                          - if S.length() < T.length() there is no way S can contain all terms in T, so return ""
+..
+12    10     9      12      (9,4)
+
+Reached the end, and have found the shortest term, in this case.
+This algorithm is ok-ish, at first glance, it appears to be, it's O( N * M ), where N is the number of items in S
+and M is the number of items in T. In the degenerate case where M is small, it's linear though, so not all hope is lost!
+======================================================================================
+Correction!!! It's O( N log M ) approximately, although the details are revealed below
+======================================================================================
+
+Let's assume that other people are convinced that it should be coded-up, in any case.
+
+We obviously can't hard-code variables A_i, B_i, and C_i, but what I would do is use an unordered_map<char,size_t> to
+keep track of them. If the size of the map is equal to the number of items in T, then we know we have found a solution.
+======================================================================================
+Correction!!! Use an ordered map (std::map) to keep track of the indices by char, but
+also use an ordered set (std::set) to keep the indices in order as well.
+======================================================================================
+
+For keeping track of the shortest window, we can use two variables: size_t window_pos, size_t window_len.
+If we initialize window_len to S.length(), then we can be sure we will always be updating it with a smaller size.
+
+Finally, let's also not forget the short circuit solutions we mentioned above.
+
+Additional comments:
+
+The leetcode test cases allows duplicates in t, which is super freaking annoying.
+It's an unnecessarily complex wrench to throw into the works, but realistically, so is
+every other mutation of a common problem.
+
