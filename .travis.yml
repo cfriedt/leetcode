@@ -15,7 +15,7 @@ before_script:
   - sudo sh .scripts/build-and-install-libgtest-libraries.sh
 
 script:
-  - make
+  - make -j`nproc --all`
   - make check
 
 #after_success:
