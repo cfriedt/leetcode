@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <stdexcept>
+
 using namespace std;
 
 class Solution {
@@ -59,7 +61,7 @@ public:
 
 	size_t fact( size_t n ) {
 		if ( n < 0 ) {
-			throw std::invalid_argument( "negative numbers unsupported" );
+			throw invalid_argument( "negative numbers unsupported" );
 		}
 		if ( 0 == n ) {
 			return 1;
