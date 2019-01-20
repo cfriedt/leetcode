@@ -31,13 +31,13 @@ using namespace std;
 class Solution {
 public:
 
-	// https://leetcode.com/problems/two-sum/
+	// https://leetcode.com/problems/reverse-words-in-a-string/
 
 	static void trim( string & s ) {
-		for( ; isprint( s[ 0 ] ); ) {
+		for( ; !s.empty() && ::isspace( s[ 0 ] ); ) {
 			s = s.substr( 1 );
 		}
-		for( ; !s.empty() && isprint( s[ s.length() - 1 ] ); ) {
+		for( ; !s.empty() && ::isspace( s[ s.length() - 1 ] ); ) {
 			s = s.substr( 0, s.length() - 2 );
 		}
 	}
@@ -67,6 +67,10 @@ public:
 
 		trim( s );
 
+		if ( "" == s ) {
+			return;
+		}
+
 		// O( N ) time
 		while( getline( ss, tok, ' ' ) ) {
 			if ( ! tok.empty() ) {
@@ -74,7 +78,7 @@ public:
 			}
 		}
 
-		ss = stringstream();
+		ss.clear();
 
 		// O( N ) time
 		for( bool first = true; ! stack.empty(); first = false ) {
@@ -87,7 +91,6 @@ public:
 			ss << tok;
 		}
 
-		string result = ss.str();
-		s = result;
+		s = ss.str();
 	}
 };
