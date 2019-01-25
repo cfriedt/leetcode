@@ -58,7 +58,9 @@ public:
 		// string hashing in C++, for the purposes of this problem.
 		//
 		// Note, that these signatures are not proper serializations of the trees.
-		// That is a whole other (hard) problem! https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
+		// That is a whole other (hard) problem!
+		// https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
+		// https://leetcode.com/problems/serialize-and-deserialize-bst/
 		//
 		// So, the algorithm is:
 		// * perform a pre-order traversal of the tree
