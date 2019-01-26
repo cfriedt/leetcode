@@ -52,8 +52,6 @@ TEST( InsertDeleteGetRandomO1DuplicatesAllowed, Test_A ) {
 	EXPECT_EQ( s.insert( 10 ), false );
 	EXPECT_EQ( s.insert( 100 ), true );
 
-	EXPECT_EQ( s.getNumUniqueItems(), size_t( 3 ) );
-
 	map<int,size_t> hist;
 
 	array<int,10000> samples;
@@ -90,8 +88,6 @@ TEST( InsertDeleteGetRandomO1DuplicatesAllowed, Test_B ) {
 	EXPECT_EQ( s.insert( 8 ), true );
 	EXPECT_EQ( s.insert( 9 ), true );
 
-	EXPECT_EQ( s.getNumUniqueItems(), size_t( 9 ) );
-
 	map<int,size_t> hist;
 
 	array<int,10000> samples;
@@ -112,11 +108,7 @@ TEST( InsertDeleteGetRandomO1DuplicatesAllowed, Test_C ) {
 	EXPECT_EQ( s.insert( 10 ), false );
 	EXPECT_EQ( s.insert( 100 ), true );
 
-	EXPECT_EQ( s.getNumUniqueItems(), size_t( 3 ) );
-
 	EXPECT_EQ( s.remove( 10 ), true );
-
-	EXPECT_EQ( s.getNumUniqueItems(), size_t( 3 ) );
 }
 
 TEST( InsertDeleteGetRandomO1DuplicatesAllowed, Test_D ) {
@@ -130,3 +122,54 @@ TEST( InsertDeleteGetRandomO1DuplicatesAllowed, Test_D ) {
 	EXPECT_EQ( s.remove( 1 ), true );
 	EXPECT_EQ( s.getRandom(), 1 );
 }
+
+TEST( InsertDeleteGetRandomO1DuplicatesAllowed, Test_E ) {
+
+//	["RandomizedCollection","insert","remove","insert","getRandom","remove","insert","getRandom"]
+//	[[],[1],[2],[2],[],[1],[2],[]]
+
+	RandomizedCollection s;
+	EXPECT_EQ( s.insert( 1 ), true );
+	EXPECT_EQ( s.remove( 2 ), false );
+	EXPECT_EQ( s.insert( 2 ), true );
+	int x = s.getRandom();
+	EXPECT_TRUE( x == 1 || x == 2 );
+	EXPECT_EQ( s.remove( 1 ), true );
+	EXPECT_EQ( s.insert( 2 ), false );
+	EXPECT_EQ( s.getRandom(), 2 );
+}
+
+TEST( InsertDeleteGetRandomO1DuplicatesAllowed, Test_F ) {
+
+	//Call: ["RandomizedCollection","remove","remove","insert","getRandom","remove","insert"]
+	//Arg: [[],[0],[0],[0],[],[0],[0]]
+	//Expected: [null,false,false,true,0,true,true]
+
+	RandomizedCollection s;
+	EXPECT_EQ(s.remove(0), false);
+	EXPECT_EQ(s.remove(0), false);
+	EXPECT_EQ(s.insert(0), true);
+	EXPECT_EQ(s.getRandom(), 0 );
+	EXPECT_EQ(s.remove(0), true);
+	EXPECT_EQ(s.insert(0), true);
+}
+
+TEST( InsertDeleteGetRandomO1DuplicatesAllowed, Test_G ) {
+
+	//Call: ["RandomizedCollection","insert","insert","getRandom","getRandom","insert","remove","getRandom","getRandom","insert","remove"]
+	//Arg:  [[],[3],[3],[],[],[1],[3],[],[],[0],[0]]
+	//Expected: [null,true,false,3,3,true,true,3,3,true,true]
+
+	RandomizedCollection s;
+	EXPECT_EQ(s.insert(3), true);
+	EXPECT_EQ(s.insert(3), false);
+	EXPECT_EQ(s.getRandom(), 3 );
+	EXPECT_EQ(s.getRandom(), 3 );
+	EXPECT_EQ(s.insert(1), true);
+	EXPECT_EQ(s.remove(3), true);
+	EXPECT_EQ(s.getRandom(), 1 );
+	EXPECT_EQ(s.getRandom(), 1 );
+	EXPECT_EQ(s.insert(0), true);
+	EXPECT_EQ(s.remove(0), true);
+}
+
