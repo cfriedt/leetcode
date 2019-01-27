@@ -33,7 +33,7 @@ using namespace std;
 
 class RandomizedSet {
 public:
-    RandomizedSet() {}
+    RandomizedSet() : nitems( 0 ) {}
 
     using bool_ptr = pair<bool,int *>; // present, and int *
 
