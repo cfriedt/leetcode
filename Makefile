@@ -48,18 +48,11 @@ EXE = $(CPPSRC:.cpp=)
 
 all: $(EXE)
 
-%-test.gcno: %-test.cpp %.cpp Makefile
 %-test: %-test.cpp %.cpp Makefile
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $< $(LDLIBS)
 
-%-test.gcov: %-test.gcno
-	gcov $(@:.gcov=.cpp) 
-
 clean:
 	rm -f $(EXE) *-test *.gcno *.gcov
-
-$(UTIL): $(UTIL_OBJ)
-	ar crs $@ $^
 
 check: $(EXE)
 	NTEST=0; \
