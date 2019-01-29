@@ -24,20 +24,33 @@
 
 CXX ?= $(CROSS_COMPILE)g++
 
-CPPFLAGS = -I/usr/include/gtest
-CXXFLAGS = -Wall -Werror -g -O0 -std=c++11
+CPPFLAGS :=
+CXXFLAGS :=
+LDFLAGS :=
+LDLIBS :=
 
-CPPSRC = $(shell find * -name '*-test.cpp')
+CXXFLAGS += -Wall -Werror -g -O0 -std=c++11
+
+CPPFLAGS += -I/usr/include/gtest
+LDLIBS += -lgtest -lgtest_main
+
+CPPFLAGS += -Iutil
+LDFLAGS += -Lutil
+
+CPPSRC = $(shell ls *-test.cpp)
 
 EXE = $(CPPSRC:.cpp=)
 
 all: $(EXE)
 
 %-test: %-test.cpp %.cpp Makefile
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $< -lgtest -lgtest_main
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $< $(LDLIBS)
 
 clean:
-	rm -f $(EXE)
+	rm -f $(EXE) *-test
+
+$(UTIL): $(UTIL_OBJ)
+	ar crs $@ $^
 
 check: $(EXE)
 	NTEST=0; \
