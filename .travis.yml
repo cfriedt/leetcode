@@ -20,7 +20,7 @@ script:
   - make check
 
 after_success:
-  - coveralls --gcov-options '\-lp'
+  - coveralls --exclude util/ --E '*-test.cpp' --gcov-options '\-lp'
 
 notifications:
   email: false
