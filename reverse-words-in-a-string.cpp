@@ -59,7 +59,6 @@ public:
 	//Obviously if the input is empty then the output will be empty
 	//Have to consider multiple spaces, tabs, etc, but I believe the ss / getline will handle that.
 
-		stringstream ss( s );
 		string tok;
 
 		// O( N ) space, N being the number of words
@@ -70,6 +69,8 @@ public:
 		if ( "" == s ) {
 			return;
 		}
+
+		stringstream ss( s );
 
 		// O( N ) time
 		while( getline( ss, tok, ' ' ) ) {
