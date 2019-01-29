@@ -33,7 +33,7 @@ public:
 
 	// https://leetcode.com/problems/letter-combinations-of-a-phone-number
 
-	const array<string,10> lut = {
+	const array<string,10> lut{
 		"",
 		"",
 		"abc",
