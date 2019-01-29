@@ -28,8 +28,13 @@ CPPFLAGS :=
 CXXFLAGS :=
 LDFLAGS :=
 LDLIBS :=
+GCOVFLAGS :=
 
 CXXFLAGS += -Wall -Werror -g -O0 -std=c++11
+
+# gcov
+CXXFLAGS += -fprofile-arcs -ftest-coverage
+GCOV_FLAGS += -r
 
 CPPFLAGS += -I/usr/include/gtest
 LDLIBS += -lgtest -lgtest_main
@@ -43,11 +48,15 @@ EXE = $(CPPSRC:.cpp=)
 
 all: $(EXE)
 
+%-test.gcno: %-test.cpp %.cpp Makefile
 %-test: %-test.cpp %.cpp Makefile
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $< $(LDLIBS)
 
+%-test.gcov: %-test.gcno
+	gcov $(@:.gcov=.cpp) 
+
 clean:
-	rm -f $(EXE) *-test
+	rm -f $(EXE) *-test *.gcno *.gcov
 
 $(UTIL): $(UTIL_OBJ)
 	ar crs $@ $^
@@ -64,6 +73,7 @@ check: $(EXE)
 			NPASS=$$((NPASS+1)); \
 		fi; \
 		NTEST=$$((NTEST+1)); \
+		gcov $(GCOV_FLAGS) $${i}.cpp; \
 	done; \
 	if [ $$NPASS -eq $$NTEST ]; then \
 		exit 0; \
