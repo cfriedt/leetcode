@@ -1,0 +1,21 @@
+#ifndef UTIL_LISTNODE_HPP_
+#define UTIL_LISTNODE_HPP_
+
+#if ! defined( GTEST_INCLUDE_GTEST_GTEST_H_ )
+#error ListNode.hpp should only be included in test cpp files
+#endif /* ! defined( GTEST_INCLUDE_GTEST_GTEST_H_ ) */
+
+#include <string>
+
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(nullptr) {}
+};
+
+ListNode *ListNode_from_string( const std::string & s );
+std::string ListNode_to_string( const ListNode *head );
+
+void ListNode_cleanup( ListNode **head );
+
+#endif /* UTIL_LISTNODE_HPP_ */
