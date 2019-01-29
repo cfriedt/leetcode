@@ -13,13 +13,14 @@ addons:
 
 before_script:
   - sudo sh .scripts/build-and-install-libgtest-libraries.sh
+  - pip install --user cpp-coveralls
 
 script:
   - make -j`nproc --all`
   - make check
 
-#after_success:
-#  - coveralls --root .. -E ".*external.*" -E ".*CMakeFiles.*" -E ".*test/.*.cpp.*"
+after_success:
+  - coveralls --gcov-options '\-lp'
 
 notifications:
   email: false
