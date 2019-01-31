@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include <array>
 #include <climits>
 #include <string>
 #include <vector>
