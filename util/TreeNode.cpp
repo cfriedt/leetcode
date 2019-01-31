@@ -228,7 +228,7 @@ static void string_to_TreeIR( const string & s, TreeIR & ir ) {
 
 	vector<string> vals = split( _s );
 
-	for( size_t i = 0; i < vals.size(); i++ ) {
+	for( size_t i = 0; i < vals.size(); i++) {
 
 		size_t D = size_t( ::floorf( ::log2f( float( i + 1 ) ) ) );
 		size_t P = ( (i + 1) / 2 ) % ( 1 << ( D - 1 ) );
@@ -256,9 +256,16 @@ static void string_to_TreeIR( const string & s, TreeIR & ir ) {
 			}
 		} else {
 			TreeNode *parent = (TreeNode *)ir[ row - 1 ][ P ];
-			if ( nullptr == parent ) {
-				throw logic_error( "all nodes must have a non-null parent" );
+			for( ; nullptr == parent; ) {
+				P++;
+				col = 2 * P + C;
+				parent = (TreeNode *)ir[ row - 1 ][ P ];
 			}
+			//TreeNode *parent = (TreeNode *)ir[ row - 1 ][ P ];
+			//if ( nullptr == parent ) {
+			//	continue;
+			//	throw logic_error( "all nodes must have a non-null parent" );
+			//}
 			if ( C ) {
 				parent->right = node;
 			} else {
