@@ -24,75 +24,49 @@
 
 #include <gtest.h>
 
-#include <algorithm>
-#include <array>
-
-struct TreeNode {
-	int val;
-	TreeNode *left, *right;
-	TreeNode( int x ) : val( x ), left( nullptr ), right( nullptr ) {}
-};
-
-bool operator==( const TreeNode & a, const TreeNode & b ) {
-	if ( a.val != b.val ) {
-		return false;
-	}
-
-	if (
-		false
-		|| ( nullptr == a.left && nullptr != b.left )
-		|| ( nullptr == b.left && nullptr != a.left )
-	) {
-		return false;
-	}
-
-	if (
-		false
-		|| ( nullptr == a.right && nullptr != b.right )
-		|| ( nullptr == b.right && nullptr != a.right )
-	) {
-		return false;
-	}
-
-	return
-		true
-		&& (
-			false
-			|| ( nullptr == a.left && nullptr == b.left )
-			|| *a.left == *b.left
-		)
-		&& (
-			false
-			|| ( nullptr == a.right && nullptr == b.right )
-			|| *a.right == *b.right
-		)
-		;
-}
+#include "util/TreeNode.cpp"
 
 #include "find-duplicate-subtrees.cpp"
 
-TEST( FindDuplicateSubtrees, Test_Example1 ) {
-	array<TreeNode,7> nodes{ TreeNode( 1 ), TreeNode( 2 ), TreeNode( 3 ), TreeNode( 4 ), TreeNode( 2 ), TreeNode( 4 ), TreeNode( 4 ) };
+class FindDuplicateSubtrees : public ::testing::Test {
 
-	nodes[ 0 ].left  = & nodes[ 1 ];
-	nodes[ 0 ].right = & nodes[ 2 ];
+public:
 
-	nodes[ 1 ].left  = & nodes[ 3 ];
+	FindDuplicateSubtrees() : root( nullptr ) {}
 
-	nodes[ 2 ].left  = & nodes[ 4 ];
-	nodes[ 2 ].right = & nodes[ 5 ];
+	TreeNode *root;
+	vector<TreeNode *> output;
+	string    input;
+	vector<string>    expected_vs;
+	vector<string>    actual_vs;
+	Solution  soln;
 
-	nodes[ 4 ].left = & nodes[ 6 ];
-
-	vector<TreeNode *> expected_vt = vector<TreeNode *>{ & nodes[ 1 ], & nodes[ 3 ] };
-	vector<TreeNode *> actual_vt = Solution().findDuplicateSubtrees( & nodes[ 0 ] );
-
-	EXPECT_EQ(actual_vt.size(), expected_vt.size());
-
-	sort( expected_vt.begin(), expected_vt.end() );
-	sort( actual_vt.begin(), actual_vt.end() );
-
-	for( size_t i = 0; i < min( actual_vt.size(), expected_vt.size() ); i++ ) {
-		EXPECT_EQ( *actual_vt[i], *expected_vt[i] );
+	void mSetUp() {
+		// needs to be called from within test case
+		root = TreeNode_from_string( input );
 	}
+
+	void doTest() {
+		output = soln.findDuplicateSubtrees(root);
+		for( auto & o: output ) {
+			actual_vs.push_back( TreeNode_to_string( o ) );
+		}
+
+		EXPECT_EQ( actual_vs, expected_vs );
+	}
+
+	virtual void TearDown() override {
+		TreeNode_cleanup( root );
+		for( auto & o: output ) {
+			TreeNode_cleanup( o );
+		}
+	}
+};
+
+TEST_F( FindDuplicateSubtrees, Test_1_2_3_4_null_2_4_null_null_4 ) {
+	string input = "[1,2,3,4,null,2,4,null,null,4]";
+	expected_vs = vector<string>({
+		"[2,4]",
+		"[4]",
+	});
 }
