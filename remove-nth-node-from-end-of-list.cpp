@@ -43,12 +43,21 @@ public:
         // The time complexity is O( 3N ) => O( N ), which isn't horrible
         // The space complexity is O( 1 )
 
+    	if ( nullptr == head ) {
+    		return nullptr;
+    	}
+
         head = reverseList( head );
 
         ListNode *it;
         ListNode *prev;
         int i;
-        for( i = 1, prev = nullptr, it = head; i < n; prev = it, it = it->next, i++ );
+        for( i = 1, prev = nullptr, it = head; i < n && nullptr != it ; prev = it, it = it->next, i++ );
+
+        if ( nullptr == it ) {
+        	return nullptr;
+        }
+
         if ( nullptr == prev ) {
             head = it->next;
         } else {

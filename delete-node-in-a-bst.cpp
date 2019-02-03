@@ -56,7 +56,7 @@ public:
 		//    If the predecessor or successor has a child (there can be only one), reparent
 		//    the child to the predecessor or successor's parent.
 
-		TreeNode *removed_node; // This memory would be leaked, since we don't give it back to
+		TreeNode *removed_node = nullptr; // This memory would be leaked, since we don't give it back to
 								// the user. Normally, I would make deleteNode() return
 								// the actual node that was deleted rather than the
 								// tree root.
@@ -130,19 +130,21 @@ public:
 			removed_node = xessor;
 		}
 
-		// don't leave any dangling pointers!
-		removed_node->left = nullptr;
-		removed_node->right = nullptr;
+		if ( nullptr != removed_node ) {
+			// don't leave any dangling pointers!
+			removed_node->left = nullptr;
+			removed_node->right = nullptr;
 
-		// I'm not a big fan of the design of this problem.
-		// It forces memory allocation *into* the node deletion
-		// routine, where really, the node deletion should be done
-		// *outside* of this function, if it needs to be done so at all.
-		// Typically node removal methods return the node that is
-		// removed, so the caller can free memory, *if* the caller needs to,
-		// rather than the base of the tree again... which is almost
-		// useless without a TreeNode **.
-		delete removed_node;
+			// I'm not a big fan of the design of this problem.
+			// It forces memory allocation *into* the node deletion
+			// routine, where really, the node deletion should be done
+			// *outside* of this function, if it needs to be done so at all.
+			// Typically node removal methods return the node that is
+			// removed, so the caller can free memory, *if* the caller needs to,
+			// rather than the base of the tree again... which is almost
+			// useless without a TreeNode **.
+			delete removed_node;
+		}
 
 		return root;
 	}
