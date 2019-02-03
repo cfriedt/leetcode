@@ -1,0 +1,4 @@
+ignore:
+  - "util/"
+  - "*-test.cpp"
+

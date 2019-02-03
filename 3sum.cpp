@@ -191,7 +191,7 @@ public:
 		// In the cases above, M is obtained via binary search for target 0 - nums[ L ] - nums[ R ],
 		// where M == -1 represents failure to find the target.
 
-		for( int L = 0, R = nums.size()-1; L <= int( nums.size() - 2 ); L++ ) {
+		for( int L = 0; L <= int( nums.size() - 2 ); L++ ) {
 			int l = nums[ L ];
 			if ( l > 0 ) {
 				break;
@@ -199,7 +199,7 @@ public:
 			if ( L > 0 && l == nums[ L - 1 ] ) {
 				continue;
 			}
-			for( R = nums.size() - 1;; R-- ) {
+			for( int R = nums.size() - 1;; R-- ) {
 				if ( R < L + 2 ) {
 					break;
 				}

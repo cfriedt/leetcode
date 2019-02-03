@@ -28,97 +28,66 @@ using namespace std;
 
 #include <gtest.h>
 
-struct ListNode {
-	int val;
-	ListNode *next;
-	ListNode(int x) : val(x), next(NULL) {}
-};
+#include "util/ListNode.cpp"
 
 #include "add-two-numbers.cpp"
 
-bool operator==( const ListNode & a, const ListNode & b ) {
-	if ( a.val != b.val ) {
-		return false;
+class AddTwoNumbers : public ::testing::Test {
+
+public:
+
+	AddTwoNumbers() : l1( nullptr ), l2( nullptr ), output( nullptr ) {}
+
+	string    l1_str;
+	string    l2_str;
+	ListNode *l1;
+	ListNode *l2;
+	ListNode *output;
+	string    expected_string;
+	string    actual_string;
+	Solution  soln;
+
+	void mSetUp() {
+		// needs to be called from within test case
+		l1 = ListNode_from_string( l1_str );
+		l2 = ListNode_from_string( l2_str );
 	}
-	if ( a.next == nullptr && b.next == nullptr ) {
-		return true;
+
+	void doTest() {
+		output = soln.addTwoNumbers( l1, l2 );
+		actual_string = ListNode_to_string( output );
+
+		EXPECT_EQ( actual_string, expected_string );
 	}
-	if ( a.next == nullptr || b.next == nullptr ) {
-		return false;
+
+	virtual void TearDown() override {
+		ListNode_cleanup( & l1 );
+		ListNode_cleanup( & l2 );
+		ListNode_cleanup( & output );
 	}
-	return *a.next == *b.next;
+};
+
+TEST_F( AddTwoNumbers, Test__2_4_3__5_6_4 ) {
+	// 342 + 465 =	 807
+	l1_str = "2->4->3";
+	l2_str = "5->6->4";
+	expected_string = "7->0->8";
+	mSetUp();
+	doTest();
 }
 
-TEST( AddTwoNumbers, Test__2_4_3__5_6_4 ) {
-	// 342 + 465 =	 807
-	array<ListNode,3> l1a({ ListNode( 2 ), ListNode( 4 ), ListNode( 3 ) });
-	array<ListNode,3> l2a({ ListNode( 5 ), ListNode( 6 ), ListNode( 4 ) });
-	ListNode *l1 = & l1a[ 0 ];
-	ListNode *l2 = & l2a[ 0 ];
-
-	l1a[ 0 ].next = & l1a[ 1 ];
-	l1a[ 1 ].next = & l1a[ 2 ];
-
-	l2a[ 0 ].next = & l2a[ 1 ];
-	l2a[ 1 ].next = & l2a[ 2 ];
-
-	array<ListNode,3> expected_1a({ ListNode( 7 ), ListNode( 0 ), ListNode( 8 ) });
-	ListNode *expected_l = & expected_1a[ 0 ];
-
-	expected_l[ 0 ].next = & expected_l[ 1 ];
-	expected_l[ 1 ].next = & expected_l[ 2 ];
-
-	ListNode *actual_l = Solution().addTwoNumbers(l1, l2);
-
-	EXPECT_EQ( *actual_l, *expected_l );
+TEST_F( AddTwoNumbers, Test__9__1_9_9_9_9_9_9_9_9_9 ) {
+	l1_str = "9";
+	l2_str = "1->9->9->9->9->9->9->9->9->9";
+	expected_string = "0->0->0->0->0->0->0->0->0->0->1";
+	mSetUp();
+	doTest();
 }
 
-TEST( AddTwoNumbers, Test__9__1_9_9_9_9_9_9_9_9_9 ) {
-	// 342 + 465 =	 807
-	array<ListNode,1> l1a({ ListNode( 9 ) });
-	array<ListNode,10> l2a({ ListNode( 1 ), ListNode( 9 ), ListNode( 9 ), ListNode( 9 ), ListNode( 9 ), ListNode( 9 ), ListNode( 9 ), ListNode( 9 ), ListNode( 9 ), ListNode( 9 ) });
-	ListNode *l1 = & l1a[ 0 ];
-	ListNode *l2 = & l2a[ 0 ];
-
-	for( size_t i = 0; i < l2a.size() - 1; i++ ) {
-		l2a[ i ].next = & l2a[ i + 1 ];
-	}
-
-	array<ListNode,11> expected_1a({ ListNode( 0 ), ListNode( 0 ), ListNode( 0 ), ListNode( 0 ), ListNode( 0 ), ListNode( 0 ), ListNode( 0 ), ListNode( 0 ), ListNode( 0 ), ListNode( 0 ), ListNode( 1 ) });
-	ListNode *expected_l = & expected_1a[ 0 ];
-
-	for( size_t i = 0; i < expected_1a.size() - 1; i++ ) {
-		expected_1a[ i ].next = & expected_1a[ i + 1 ];
-	}
-
-	ListNode *actual_l = Solution().addTwoNumbers(l1, l2);
-
-	EXPECT_EQ( *actual_l, *expected_l );
-}
-
-TEST( AddTwoNumbers, Test__1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_1__5_6_4 ) {
-	// 342 + 465 =	 807
-
-	array<ListNode,31> l1a({ ListNode(1), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(1) });
-	array<ListNode,3> l2a({ ListNode( 5 ), ListNode( 6 ), ListNode( 4 ) });
-	ListNode *l1 = & l1a[ 0 ];
-	ListNode *l2 = & l2a[ 0 ];
-
-	for( size_t i = 0; i < l1a.size() - 1; i++ ) {
-		l1a[ i ].next = & l1a[ i + 1 ];
-	}
-	for( size_t i = 0; i < l2a.size() - 1; i++ ) {
-		l2a[ i ].next = & l2a[ i + 1 ];
-	}
-
-	array<ListNode,31> expected_1a({ ListNode(6), ListNode(6), ListNode(4), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(0), ListNode(1) });
-	ListNode *expected_l = & expected_1a[ 0 ];
-
-	for( size_t i = 0; i < expected_1a.size() - 1; i++ ) {
-		expected_1a[ i ].next = & expected_1a[ i + 1 ];
-	}
-
-	ListNode *actual_l = Solution().addTwoNumbers(l1, l2);
-
-	EXPECT_EQ( *actual_l, *expected_l );
+TEST_F( AddTwoNumbers, Test__1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_1__5_6_4 ) {
+	l1_str = "1->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->1";
+	l2_str = "5->6->4";
+	expected_string = "6->6->4->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->0->1";
+	mSetUp();
+	doTest();
 }
