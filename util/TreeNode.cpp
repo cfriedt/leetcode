@@ -104,11 +104,13 @@ static string TreeIR_to_string( const TreeIR & ir );
 static TreeNode *TreeIR_root( const TreeIR & ir );
 
 bool TreeNode_string_is_valid( const string & s ) {
+	(void)s;
 	// TODO: implement me
 	return true;
 }
 
 bool TreeNode_is_valid( const TreeNode * root ) {
+	(void) root;
 	// TODO: implement me
 	return true;
 }
@@ -136,6 +138,7 @@ ostream & operator<<( ostream & os, const TreeNode * & root ) {
 }
 
 istream &operator>>( istream  & is, TreeNode * & root ) {
+	(void)root;
 	return is;
 }
 
@@ -258,7 +261,6 @@ static void string_to_TreeIR( const string & s, TreeIR & ir ) {
 			TreeNode *parent = (TreeNode *)ir[ row - 1 ][ P ];
 			for( ; nullptr == parent; ) {
 				P++;
-				col = 2 * P + C;
 				parent = (TreeNode *)ir[ row - 1 ][ P ];
 			}
 			//TreeNode *parent = (TreeNode *)ir[ row - 1 ][ P ];

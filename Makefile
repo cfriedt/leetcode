@@ -20,17 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-.PHONY: all clean check
+.PHONY: all clean check gtest gcov clangtidy
 
 CXX ?= $(CROSS_COMPILE)g++
+#CXX := clang++
 
 CPPFLAGS :=
 CXXFLAGS :=
 LDFLAGS :=
 LDLIBS :=
 GCOVFLAGS :=
+CTIDYFLAGS :=
 
-CXXFLAGS += -Wall -Werror -g -O0 -std=c++11
+CXXFLAGS += -Wall -Werror -Wextra -g -O0 -std=c++11
 
 # gcov
 CXXFLAGS += -fprofile-arcs -ftest-coverage
@@ -42,6 +44,25 @@ LDLIBS += -lgtest -lgtest_main
 CPPFLAGS += -Iutil
 LDFLAGS += -Lutil
 
+CTIDYCHECKS :=
+CTIDYCHECKS += clang-analyzer-core*
+CTIDYCHECKS += clang-analyzer-security*
+CTIDYCHECKS += clang-analyzer-unix*
+CTIDYCHECKS += clang-analyzer-valist*
+CTIDYCHECKS += clang-analyzer-optin.cplusplus*
+CTIDYCHECKS += clang-analyzer-optin.portability*
+CTIDYCHECKS += clang-analyzer-nullability*
+CTIDYCHECKS += clang-analyzer-deadcode*
+CTIDYCHECKS += clang-analyzer-cplusplus*
+NOTHING :=
+SPACE := $(NOTHING) $(NOTHING)
+COMMA := ,
+CTIDYCHECKLIST := $(subst $(SPACE),$(COMMA),$(strip $(CTIDYCHECKS)))
+
+CTIDYFLAGS += -header-filter='.*'
+CTIDYFLAGS += -checks='$(CTIDYCHECKLIST)'
+CTIDYFLAGS += -warnings-as-errors='$(CTIDYCHECKLIST)'
+
 CPPSRC = $(shell ls *-test.cpp)
 
 EXE = $(CPPSRC:.cpp=)
@@ -52,9 +73,14 @@ all: $(EXE)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $< $(LDLIBS)
 
 clean:
-	rm -f $(EXE) *-test *.gcno *.gcov
+	rm -f $(EXE) *-test *.gcno *.gcov *.gcda *.clangtidy
 
-check: $(EXE)
+check:
+	$(MAKE) gtest
+	$(MAKE) gcov
+	$(MAKE) clangtidy
+
+gtest: $(EXE)
 	NTEST=0; \
 	NPASS=0; \
 	if [ -z "$(strip $(EXE))" ]; then \
@@ -66,10 +92,27 @@ check: $(EXE)
 			NPASS=$$((NPASS+1)); \
 		fi; \
 		NTEST=$$((NTEST+1)); \
-		gcov $(GCOV_FLAGS) $${i}.cpp; \
 	done; \
 	if [ $$NPASS -eq $$NTEST ]; then \
 		exit 0; \
 	else \
 		exit 1; \
 	fi
+
+gcov: $(EXE)
+	if [ -z "$(strip $(EXE))" ]; then \
+		exit 0; \
+	fi; \
+	for i in $(EXE); do \
+		gcov $(GCOV_FLAGS) $${i}.cpp &> /dev/null; \
+	done; \
+	gcovr -e '.*-test.cpp'; \
+	PCNT=`gcovr -r $(shell pwd) -e '.*-test.cpp' | grep "^TOTAL" | tail -n 1 | awk '{print $$4}' | sed -e 's|%||'`; \
+	if [ $${PCNT} -lt 90 ]; then \
+		exit 1; \
+	fi
+
+%.clangtidy: %.cpp
+	clang-tidy $(CTIDYFLAGS) $< -- $(CPPFLAGS) $(CXXFLAGS) &> $@ || cat $@
+
+clangtidy: $(addsuffix .clangtidy,$(EXE))

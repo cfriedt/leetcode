@@ -1,3 +1,5 @@
+dist: xenial
+
 sudo: false
 
 language:
@@ -10,17 +12,18 @@ addons:
     packages:
       - cmake
       - libgtest-dev
+      - clang-tidy
+      - gcovr
 
 before_script:
   - sudo sh .scripts/build-and-install-libgtest-libraries.sh
-  - pip install --user cpp-coveralls
 
 script:
   - make -j`nproc --all`
   - make check
 
 after_success:
-  - coveralls --exclude util/ --E '*-test.gcov' --gcov-options '\-lp'
+  - bash < (curl -s https://codecov.io/bash)
 
 notifications:
   email: false
