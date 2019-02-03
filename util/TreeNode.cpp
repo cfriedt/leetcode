@@ -106,12 +106,14 @@ static TreeNode *TreeIR_root( const TreeIR & ir );
 bool TreeNode_string_is_valid( const string & s ) {
 	(void)s;
 	// TODO: implement me
+	(void)s;
 	return true;
 }
 
 bool TreeNode_is_valid( const TreeNode * root ) {
 	(void) root;
 	// TODO: implement me
+	(void)root;
 	return true;
 }
 
