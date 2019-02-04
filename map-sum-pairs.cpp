@@ -37,7 +37,7 @@ public:
 		int val;
 		array<shared_ptr<trie_node>,26> child;
 		trie_node() : trie_node( int( 0 ) ) {}
-		trie_node( int val ) : val( val ) {}
+		explicit trie_node( int val ) : val( val ) {}
 	};
 	shared_ptr<trie_node> root;
 

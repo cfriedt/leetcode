@@ -110,13 +110,15 @@ public:
 	}
 
 	int nextL( vector<int>& nums, int L ) {
-		L = ( L < 0 ) ? 0 : L;
+		L = ( L >= 0 ) ? L : 0;
+		L = ( L < (int)nums.size() ) ? L : nums.size() - 1;
 		for( int t = nums[ L ]; t == nums[ L ] && L < int(nums.size()); L++ );
 		return L;
 	}
 
 	int nextR( vector<int>& nums, int R ) {
-		R = ( R < 0 ) ? 0 : R;
+		R = ( R >= 0 ) ? R : 0;
+		R = ( R < (int)nums.size() ) ? R : nums.size() - 1;
 		for( int t = nums[ R ]; t == nums[ R ] && R >= 0; R-- );
 		return R;
 	}
