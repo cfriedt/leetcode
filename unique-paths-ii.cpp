@@ -116,7 +116,7 @@ public:
 		for( size_t row = 0; row < M; row++ ) {
 			for( size_t col = 0; col < N; col++ ) {
 				if ( 0 == row && 0 == col ) {
-					if ( 0 == row && 0 == col && 1 == obstacleGrid[row][col] ) {
+					if ( 1 == obstacleGrid[row][col] ) {
 						return 0;
 					}
 					obstacleGrid[row][col] = 1;
