@@ -52,7 +52,7 @@ public:
 	 */
 
 	static void listPopHead( ListNode **head ) {
-		if ( !( nullptr == head || nullptr == *head ) ) {
+		if ( nullptr != head && nullptr != *head ) {
 			*head = (*head)->next;
 		}
 	}
