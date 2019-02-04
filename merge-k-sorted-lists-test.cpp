@@ -22,75 +22,61 @@
  * SOFTWARE.
  */
 
-#include <gtest.h>
-
 #include <array>
 #include <vector>
 
+#include <gtest.h>
+
+#include "util/ListNode.cpp"
+
 using namespace std;
-
-struct ListNode {
-	int val;
-	ListNode *next;
-	ListNode(int x) : val(x), next(NULL){}
-	ListNode() : ListNode( 0 ) {}
-};
-
-bool operator==( const ListNode & a, const ListNode & b ) {
-	if ( a.val != b.val ) {
-		return false;
-	}
-
-	if ( a.next == nullptr && b.next == nullptr ) {
-		return true;
-	}
-
-	if ( a.next == nullptr || b.next == nullptr ) {
-		return false;
-	}
-
-	return *a.next == *b.next;
-}
 
 #include "merge-k-sorted-lists.cpp"
 
-TEST( MergeKSortedLists, Test_1_4_5__1_3_4__2_6 ) {
+class MergeKSortedLists : public ::testing::Test {
 
-	array<ListNode,8> node{
-		ListNode( 1 ), ListNode( 4 ), ListNode( 5 ),
-		ListNode( 1 ), ListNode( 3 ), ListNode( 4 ),
-		ListNode( 2 ), ListNode( 6 ),
-	};
+public:
 
-	node[ 0 ].next = & node[ 1 ];
-	node[ 1 ].next = & node[ 2 ];
-	node[ 2 ].next = nullptr;
-	node[ 3 ].next = & node[ 4 ];
-	node[ 4 ].next = & node[ 5 ];
-	node[ 5 ].next = nullptr;
-	node[ 6 ].next = & node[ 7 ];
-	node[ 7 ].next = nullptr;
+	MergeKSortedLists() : output( nullptr ) {}
 
+	vector<string> input;
+	vector<ListNode*> lists;
+	ListNode *output;
+	string    expected_string;
+	string    actual_string;
+	Solution  soln;
 
-	vector<ListNode*> lists {
-		& node[ 0 ],
-		& node[ 3 ],
-		& node[ 6 ],
-	};
-
-	array<ListNode,8> sorted_node {
-		ListNode( 1 ), ListNode( 1 ), ListNode( 2 ), ListNode( 3 ), ListNode( 4 ), ListNode( 4 ), ListNode( 5 ), ListNode( 6 ),
-	};
-	for( size_t i = 0; i < sorted_node.size(); i++ ) {
-		if ( i == sorted_node.size() - 1 ) {
-			sorted_node[ i ].next = nullptr;
-		} else {
-			sorted_node[ i ].next = & sorted_node[ i + 1 ];
+	void mSetUp() {
+		// needs to be called from within test case
+		for( auto & s: input ) {
+			lists.push_back( ListNode_from_string( s ) );
 		}
 	}
 
-	ListNode expected_list; expected_list.next = & sorted_node[ 0 ];
-	ListNode actual_list; actual_list.next = Solution().mergeKLists( lists );
+	void doTest() {
+		output = soln.mergeKLists( lists );
+		actual_string = ListNode_to_string( output );
 
-	EXPECT_EQ( actual_list, expected_list );
+		EXPECT_EQ( actual_string, expected_string );
+	}
+
+	virtual void TearDown() override {
+		for( auto & l: lists ) {
+			ListNode_cleanup( & l );
+		}
+		ListNode_cleanup( & output );
+	}
+};
+
+TEST_F( MergeKSortedLists, Test_1_4_5__1_3_4__2_6 ) {
+
+	input = vector<string>({
+		"1->4->5",
+		"1->3->4",
+		"2->6",
+	});
+	expected_string = "1->1->2->3->4->4->5->6";
+
+	mSetUp();
+	doTest();
 }

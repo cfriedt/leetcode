@@ -50,8 +50,8 @@ public:
     vector<int> nums;
     unordered_map<pair<int,int>,int, pair_hash> cache;
 
-    NumArray( vector<int> nums ) : nums( nums ) {
-    }
+    NumArray() {}
+    NumArray( const vector<int> & nums ) : nums( nums ) {}
 
     void update(int i, int val) {
     	int prev = nums[ i ];

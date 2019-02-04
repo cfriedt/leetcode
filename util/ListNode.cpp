@@ -28,10 +28,10 @@ ListNode *ListNode_from_string( const string & s ) {
 	return head.next;
 }
 
-string ListNode_to_string( const ListNode *head ) {
+string ListNode_to_string( ListNode *head ) {
 	stringstream ss;
 	ListNode *it;
-	for( it = (ListNode *)head;; it = it->next ) {
+	for( it =  head;; it = it->next ) {
 		ss << it->val;
 		if ( nullptr == it->next ) {
 			break;

@@ -14,7 +14,7 @@ struct ListNode {
 };
 
 ListNode *ListNode_from_string( const std::string & s );
-std::string ListNode_to_string( const ListNode *head );
+std::string ListNode_to_string( ListNode *head );
 
 void ListNode_cleanup( ListNode **head );
 

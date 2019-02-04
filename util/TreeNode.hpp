@@ -12,6 +12,7 @@ struct TreeNode {
 	int val;
 	TreeNode *left;
 	TreeNode *right;
+	TreeNode() : TreeNode(0) {}
 	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
 
@@ -19,7 +20,7 @@ struct TreeNode {
 // We make these global in order to not muck with LeetCode's TreeNode struct (i.e. cheat).
 bool TreeNode_is_valid( const TreeNode *root );
 bool TreeNode_string_is_valid( const std::string & s );
-std::string TreeNode_to_string( const TreeNode *root );
+std::string TreeNode_to_string( TreeNode *root );
 TreeNode *TreeNode_from_string( const std::string & s );
 std::ostream &operator<<( std::ostream &os, const TreeNode * & root );
 std::istream &operator>>( std::istream &is, TreeNode * & root );
