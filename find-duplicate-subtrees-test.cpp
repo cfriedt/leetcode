@@ -59,9 +59,6 @@ public:
 
 	virtual void TearDown() override {
 		TreeNode_cleanup( root );
-		for( auto & o: output ) {
-			TreeNode_cleanup( o );
-		}
 	}
 };
 
