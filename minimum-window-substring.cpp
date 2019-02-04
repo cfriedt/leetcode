@@ -114,7 +114,7 @@ public:
 						t_matched++;
 					}
 				}
-			} else if ( t_matched >= n_t_unique ) {
+			} else { // if ( t_matched >= n_t_unique )
 				if ( t_matched == n_t_unique ) {
 					// we have found an "interesting" window
 					size_t new_win_pos = L;

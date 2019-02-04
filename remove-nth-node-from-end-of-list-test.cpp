@@ -49,7 +49,7 @@ public:
 
 	void doTest() {
 		output = soln.removeNthFromEnd( head, n );
-		actual_string = ListNode_to_string( (const ListNode *)output );
+		actual_string = ListNode_to_string( output );
 
 		EXPECT_EQ( actual_string, expected_string );
 	}
