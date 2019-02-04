@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2018 Christopher Friedt
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
@@ -92,10 +116,10 @@ using namespace std;
 // right sibling are encoded with the string "null".
 
 
-using TreeIR = vector<vector<const TreeNode *>>;
+using TreeIR = vector<vector<TreeNode *>>;
 using NodeCache = unordered_set<const TreeNode *>;
 
-static void TreeNode_to_TreeIR( const size_t D, const size_t P, const size_t C, const TreeNode *node, TreeIR & ir, NodeCache & cache );
+static void TreeNode_to_TreeIR( const size_t D, const size_t P, const size_t C, TreeNode *node, TreeIR & ir, NodeCache & cache );
 static TreeNode *TreeIR_to_TreeNode( TreeIR & ir );
 
 static void string_to_TreeIR( const string & s, TreeIR & ir );
@@ -117,7 +141,7 @@ bool TreeNode_is_valid( const TreeNode * root ) {
 	return true;
 }
 
-string TreeNode_to_string( const TreeNode *root ) {
+string TreeNode_to_string( TreeNode *root ) {
 
 	TreeIR ir;
 	NodeCache cache;
@@ -133,7 +157,7 @@ TreeNode *TreeNode_from_string( const string & s ) {
 	return TreeIR_to_TreeNode( ir );
 }
 
-ostream & operator<<( ostream & os, const TreeNode * & root ) {
+ostream & operator<<( ostream & os, TreeNode * & root ) {
 	string s = TreeNode_to_string( root );
 	os << s;
 	return os;
@@ -171,7 +195,7 @@ size_t TreeNode_depth( TreeNode *node, size_t current_depth ) {
 	return max( ldepth, rdepth );
 }
 
-static void TreeNode_to_TreeIR( const size_t D, const size_t P, const size_t C, const TreeNode *node, TreeIR & ir, NodeCache & cache ) {
+static void TreeNode_to_TreeIR( const size_t D, const size_t P, const size_t C, TreeNode *node, TreeIR & ir, NodeCache & cache ) {
 
 		if ( nullptr == node ) {
 			return;
@@ -189,7 +213,7 @@ static void TreeNode_to_TreeIR( const size_t D, const size_t P, const size_t C, 
 		cache.insert( node );
 		if ( row >= ir.size() ) {
 			ir.resize( row + 1 );
-			ir[ row ] = vector<const TreeNode *>();
+			ir[ row ] = vector<TreeNode *>();
 		}
 		if ( col >= ir[ row ].size() ) {
 			ir[ row ].resize( col + 1 );
@@ -260,10 +284,10 @@ static void string_to_TreeIR( const string & s, TreeIR & ir ) {
 				throw logic_error( "an empty tree is specified with [], not with [null]" );
 			}
 		} else {
-			TreeNode *parent = (TreeNode *)ir[ row - 1 ][ P ];
+			TreeNode *parent = ir[ row - 1 ][ P ];
 			for( ; nullptr == parent; ) {
 				P++;
-				parent = (TreeNode *)ir[ row - 1 ][ P ];
+				parent = ir[ row - 1 ][ P ];
 			}
 			//TreeNode *parent = (TreeNode *)ir[ row - 1 ][ P ];
 			//if ( nullptr == parent ) {

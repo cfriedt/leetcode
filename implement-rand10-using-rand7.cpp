@@ -77,12 +77,11 @@ public:
 		// Assuming IID (that is that the results of each rand7() are
 		// independent), then the distribution of the sum of expected
 		// values is also uniform.
-
-		int row, col, idx;
+		int idx;
 
 		do {
-			row = rand7();
-			col = rand7();
+			int row = rand7();
+			int col = rand7();
 			idx = col + (row - 1) * 7;
 		} while( idx > 40 );
 

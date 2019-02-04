@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <unordered_set>
+
 #include <gtest.h>
 
 #include "util/TreeNode.cpp"
@@ -37,8 +39,8 @@ public:
 	TreeNode *root;
 	vector<TreeNode *> output;
 	string    input;
-	vector<string>    expected_vs;
-	vector<string>    actual_vs;
+	unordered_set<string>    expected_uss;
+	unordered_set<string>    actual_uss;
 	Solution  soln;
 
 	void mSetUp() {
@@ -49,10 +51,10 @@ public:
 	void doTest() {
 		output = soln.findDuplicateSubtrees(root);
 		for( auto & o: output ) {
-			actual_vs.push_back( TreeNode_to_string( o ) );
+			actual_uss.insert( TreeNode_to_string( o ) );
 		}
 
-		EXPECT_EQ( actual_vs, expected_vs );
+		EXPECT_EQ( actual_uss, expected_uss );
 	}
 
 	virtual void TearDown() override {
@@ -64,9 +66,11 @@ public:
 };
 
 TEST_F( FindDuplicateSubtrees, Test_1_2_3_4_null_2_4_null_null_4 ) {
-	string input = "[1,2,3,4,null,2,4,null,null,4]";
-	expected_vs = vector<string>({
+	input = "[1,2,3,4,null,2,4,null,null,4]";
+	expected_uss = unordered_set<string>({
 		"[2,4]",
 		"[4]",
 	});
+	mSetUp();
+	doTest();
 }

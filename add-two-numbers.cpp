@@ -101,7 +101,7 @@ public:
 				st |= nullptr == l1 ? 0 : 1;
 				st |= nullptr == l2 ? 0 : 2;
 
-				if ( 0 != st || ( 0 == st && carry != 0 ) ) {
+				if ( !( 0 == st && 0 == carry ) ) {
 					it->next = new ListNode( 0 );
 					it = it->next;
 					if ( 0 == st && carry != 0 ) {
