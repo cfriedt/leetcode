@@ -60,7 +60,7 @@ public:
 		}
 	}
 
-	vector<string> letterCombinations( string digits ) {
+	vector<string> letterCombinations( const string & digits ) {
 		vector<string> r;
 		if ( "" != digits ) {
 			helper( r, "", digits );
