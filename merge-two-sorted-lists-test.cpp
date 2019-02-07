@@ -22,66 +22,61 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <sstream>
-#include <vector>
+#include <gtest.h>
 
-#include "ListNode.hpp"
-#include "split.hpp"
+#include "util/ListNode.cpp"
 
-using namespace std;
+#include "merge-two-sorted-lists.cpp"
 
-ListNode *ListNode_from_string( const string & s ) {
+class MergeTwoSortedLists : public ::testing::Test {
 
-	ListNode head(-1);
-	ListNode *it;
+public:
 
-	string _s( s );
+	MergeTwoSortedLists() : l1( nullptr ), l2( nullptr ), output( nullptr ) {}
 
-	replace( _s.begin(), _s.end(), '-', ' ' );
-	replace( _s.begin(), _s.end(), '>', ' ' );
+	string s1;
+	string s2;
+	ListNode *l1;
+	ListNode *l2;
+	vector<ListNode*> mess;
+	ListNode *output;
+	string    expected_string;
+	string    actual_string;
+	Solution  soln;
 
-	vector<string> elements = split( _s );
-
-	it = & head;
-	for( auto & e: elements ) {
-		it->next = new ListNode( stoi( e ) );
-		it = it->next;
-	}
-
-	return head.next;
-}
-
-string ListNode_to_string( ListNode *head ) {
-	stringstream ss;
-	ListNode *it;
-	for( it =  head;; it = it->next ) {
-		ss << it->val;
-		if ( nullptr == it->next ) {
-			break;
+	void mSetUp() {
+		// needs to be called from within test case
+		l1 = ListNode_from_string( s1 );
+		l2 = ListNode_from_string( s2 );
+		mess.resize( ListNode_size( l1 ) + ListNode_size( l2 ) );
+		size_t i = 0;
+		for( auto it = l1; nullptr != it; it = it->next, i++ ) {
+			mess[ i ] = it;
 		}
-		ss << "->";
-	}
-	return ss.str();
-}
-
-void ListNode_cleanup( ListNode **head ) {
-
-	if ( nullptr == head || nullptr == *head ) {
-		return;
+		for( auto it = l2; nullptr != it; it = it->next, i++ ) {
+			mess[ i ] = it;
+		}
 	}
 
-	ListNode *it = *head;
+	void doTest() {
+		output = soln.mergeTwoLists(l1, l2);
+		actual_string = ListNode_to_string( output );
 
-	ListNode_cleanup( & it->next );
+		EXPECT_EQ( actual_string, expected_string );
+	}
 
-	delete it;
+	virtual void TearDown() override {
+		for( auto m: mess ) {
+			delete m;
+		}
+	}
+};
 
-	*head = nullptr;
-}
 
-size_t ListNode_size( ListNode *head ) {
-	size_t r;
-	for( r = 0; nullptr != head; r++, head = head->next );
-	return r;
+TEST_F( MergeTwoSortedLists, Test_1_2_4__1_3_4 ) {
+	s1 = "1->2->4";
+	s2 = "1->3->4";
+	expected_string = "1->1->2->3->4->4";
+	mSetUp();
+	doTest();
 }

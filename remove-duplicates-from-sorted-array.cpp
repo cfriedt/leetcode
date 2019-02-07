@@ -22,66 +22,29 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <sstream>
 #include <vector>
-
-#include "ListNode.hpp"
-#include "split.hpp"
 
 using namespace std;
 
-ListNode *ListNode_from_string( const string & s ) {
+class Solution {
+public:
 
-	ListNode head(-1);
-	ListNode *it;
+	// https://leetcode.com/problems/remove-duplicates-from-sorted-array/
 
-	string _s( s );
+	int removeDuplicates(vector<int>& nums) {
 
-	replace( _s.begin(), _s.end(), '-', ' ' );
-	replace( _s.begin(), _s.end(), '>', ' ' );
-
-	vector<string> elements = split( _s );
-
-	it = & head;
-	for( auto & e: elements ) {
-		it->next = new ListNode( stoi( e ) );
-		it = it->next;
-	}
-
-	return head.next;
-}
-
-string ListNode_to_string( ListNode *head ) {
-	stringstream ss;
-	ListNode *it;
-	for( it =  head;; it = it->next ) {
-		ss << it->val;
-		if ( nullptr == it->next ) {
-			break;
+		if ( 0 == nums.size() ) {
+			return 0;
 		}
-		ss << "->";
-	}
-	return ss.str();
-}
 
-void ListNode_cleanup( ListNode **head ) {
+		size_t i, j;
+		for( i = 0, j = 0; i < nums.size(); i++ ) {
+			if ( nums[ i ] != nums[ j ] ) {
+				j++;
+				nums[ j ] = nums[ i ];
+			}
+		}
+		return j+1;
+    }
+};
 
-	if ( nullptr == head || nullptr == *head ) {
-		return;
-	}
-
-	ListNode *it = *head;
-
-	ListNode_cleanup( & it->next );
-
-	delete it;
-
-	*head = nullptr;
-}
-
-size_t ListNode_size( ListNode *head ) {
-	size_t r;
-	for( r = 0; nullptr != head; r++, head = head->next );
-	return r;
-}
