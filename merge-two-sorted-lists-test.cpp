@@ -38,6 +38,7 @@ public:
 	string s2;
 	ListNode *l1;
 	ListNode *l2;
+	vector<ListNode*> mess;
 	ListNode *output;
 	string    expected_string;
 	string    actual_string;
@@ -47,6 +48,14 @@ public:
 		// needs to be called from within test case
 		l1 = ListNode_from_string( s1 );
 		l2 = ListNode_from_string( s2 );
+		mess.resize( ListNode_size( l1 ) + ListNode_size( l2 ) );
+		size_t i = 0;
+		for( auto it = l1; nullptr != it; it = it->next, i++ ) {
+			mess[ i ] = it;
+		}
+		for( auto it = l2; nullptr != it; it = it->next, i++ ) {
+			mess[ i ] = it;
+		}
 	}
 
 	void doTest() {
@@ -57,9 +66,9 @@ public:
 	}
 
 	virtual void TearDown() override {
-		ListNode_cleanup( & l1 );
-		ListNode_cleanup( & l2 );
-		ListNode_cleanup( & output );
+		for( auto m: mess ) {
+			delete m;
+		}
 	}
 };
 
