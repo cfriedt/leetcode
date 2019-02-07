@@ -79,3 +79,9 @@ void ListNode_cleanup( ListNode **head ) {
 
 	*head = nullptr;
 }
+
+size_t ListNode_size( ListNode *head ) {
+	size_t r;
+	for( r = 0; nullptr != head; r++, head = head->next );
+	return r;
+}

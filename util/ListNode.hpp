@@ -40,6 +40,8 @@ struct ListNode {
 ListNode *ListNode_from_string( const std::string & s );
 std::string ListNode_to_string( ListNode *head );
 
+size_t ListNode_size( ListNode *head );
+
 void ListNode_cleanup( ListNode **head );
 
 #endif /* UTIL_LISTNODE_HPP_ */
