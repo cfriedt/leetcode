@@ -22,60 +22,29 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <sstream>
+#include <climits>
+#include <unordered_map>
 #include <vector>
-
-#include "ListNode.hpp"
-#include "split.hpp"
 
 using namespace std;
 
-ListNode *ListNode_from_string( const string & s ) {
+class Solution {
+public:
 
-	ListNode head(-1);
-	ListNode *it;
+	// https://leetcode.com/problems/implement-strstr
 
-	string _s( s );
-
-	replace( _s.begin(), _s.end(), '-', ' ' );
-	replace( _s.begin(), _s.end(), '>', ' ' );
-
-	vector<string> elements = split( _s );
-
-	it = & head;
-	for( auto & e: elements ) {
-		it->next = new ListNode( stoi( e ) );
-		it = it->next;
-	}
-
-	return head.next;
-}
-
-string ListNode_to_string( ListNode *head ) {
-	stringstream ss;
-	ListNode *it;
-	for( it =  head;; it = it->next ) {
-		ss << it->val;
-		if ( nullptr == it->next ) {
-			break;
+	int strStr(string haystack, string needle) {
+        if ( "" == haystack && "" == needle ) {
+			return 0;
 		}
-		ss << "->";
-	}
-	return ss.str();
-}
-
-void ListNode_cleanup( ListNode **head ) {
-
-	if ( nullptr == head || nullptr == *head ) {
-		return;
-	}
-
-	ListNode *it = *head;
-
-	ListNode_cleanup( & it->next );
-
-	delete it;
-
-	*head = nullptr;
-}
+        if ( needle.length() > haystack.length() ) {
+			return -1;
+		}
+		for( size_t i = 0; i < haystack.length() - needle.length() + 1; i++ ) {
+			if ( needle == haystack.substr( i, needle.length() ) ) {
+				return i;
+			}
+		}
+		return -1;
+    }
+};
