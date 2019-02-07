@@ -22,66 +22,41 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <sstream>
-#include <vector>
+class Solution {
+public:
 
-#include "ListNode.hpp"
-#include "split.hpp"
+	// https://leetcode.com/problems/merge-two-sorted-lists/
 
-using namespace std;
-
-ListNode *ListNode_from_string( const string & s ) {
-
-	ListNode head(-1);
-	ListNode *it;
-
-	string _s( s );
-
-	replace( _s.begin(), _s.end(), '-', ' ' );
-	replace( _s.begin(), _s.end(), '>', ' ' );
-
-	vector<string> elements = split( _s );
-
-	it = & head;
-	for( auto & e: elements ) {
-		it->next = new ListNode( stoi( e ) );
-		it = it->next;
-	}
-
-	return head.next;
-}
-
-string ListNode_to_string( ListNode *head ) {
-	stringstream ss;
-	ListNode *it;
-	for( it =  head;; it = it->next ) {
-		ss << it->val;
-		if ( nullptr == it->next ) {
-			break;
+	ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+		ListNode root(0);
+		ListNode *it = nullptr;
+		for( ; l1 || l2; ) {
+			ListNode *least;
+			if ( false ) {
+			} else if ( l1 && l2 ) {
+				if ( l1->val <= l2->val ) {
+					least = l1;
+				} else {
+					least = l2;
+				}
+			} else if ( l1 ) {
+				least = l1;
+			} else {
+				least = l2;
+			}
+			if ( least == l1 ) {
+				l1 = l1->next;
+			} else {
+				l2 = l2->next;
+			}
+			if ( ! it ) {
+				root.next = least;
+				it = root.next;
+			} else {
+				it->next = least;
+				it = it->next;
+			}
 		}
-		ss << "->";
+		return root.next;
 	}
-	return ss.str();
-}
-
-void ListNode_cleanup( ListNode **head ) {
-
-	if ( nullptr == head || nullptr == *head ) {
-		return;
-	}
-
-	ListNode *it = *head;
-
-	ListNode_cleanup( & it->next );
-
-	delete it;
-
-	*head = nullptr;
-}
-
-size_t ListNode_size( ListNode *head ) {
-	size_t r;
-	for( r = 0; nullptr != head; r++, head = head->next );
-	return r;
-}
+};

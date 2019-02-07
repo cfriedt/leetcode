@@ -22,66 +22,39 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <sstream>
-#include <vector>
+#include <gtest.h>
 
-#include "ListNode.hpp"
-#include "split.hpp"
+#include "remove-duplicates-from-sorted-array.cpp"
 
-using namespace std;
-
-ListNode *ListNode_from_string( const string & s ) {
-
-	ListNode head(-1);
-	ListNode *it;
-
-	string _s( s );
-
-	replace( _s.begin(), _s.end(), '-', ' ' );
-	replace( _s.begin(), _s.end(), '>', ' ' );
-
-	vector<string> elements = split( _s );
-
-	it = & head;
-	for( auto & e: elements ) {
-		it->next = new ListNode( stoi( e ) );
-		it = it->next;
-	}
-
-	return head.next;
+TEST( RemoveDuplicatesFromSortedArray, Test_1_1_2 ) {
+	vector<int> nums({1,1,2});
+	vector<int> expected_vi({1,2});
+	int expected_int = 2;
+	int actual_int = Solution().removeDuplicates(nums);
+	vector<int> & actual_vi = nums;
+	actual_vi.resize( actual_int );
+	EXPECT_EQ(actual_int, expected_int);
+	EXPECT_EQ(actual_vi, expected_vi);
 }
 
-string ListNode_to_string( ListNode *head ) {
-	stringstream ss;
-	ListNode *it;
-	for( it =  head;; it = it->next ) {
-		ss << it->val;
-		if ( nullptr == it->next ) {
-			break;
-		}
-		ss << "->";
-	}
-	return ss.str();
+TEST( RemoveDuplicatesFromSortedArray, Test_0_0_1_1_1_2_2_3_3_4 ) {
+	vector<int> nums({0,0,1,1,1,2,2,3,3,4});
+	vector<int> expected_vi({0,1,2,3,4});
+	int expected_int = 5;
+	int actual_int = Solution().removeDuplicates(nums);
+	vector<int> & actual_vi = nums;
+	actual_vi.resize( actual_int );
+	EXPECT_EQ(actual_int, expected_int);
+	EXPECT_EQ(actual_vi, expected_vi);
 }
 
-void ListNode_cleanup( ListNode **head ) {
-
-	if ( nullptr == head || nullptr == *head ) {
-		return;
-	}
-
-	ListNode *it = *head;
-
-	ListNode_cleanup( & it->next );
-
-	delete it;
-
-	*head = nullptr;
-}
-
-size_t ListNode_size( ListNode *head ) {
-	size_t r;
-	for( r = 0; nullptr != head; r++, head = head->next );
-	return r;
+TEST( RemoveDuplicatesFromSortedArray, Test_1_2 ) {
+	vector<int> nums({1,2});
+	vector<int> expected_vi({1,2});
+	int expected_int = 2;
+	int actual_int = Solution().removeDuplicates(nums);
+	vector<int> & actual_vi = nums;
+	actual_vi.resize( actual_int );
+	EXPECT_EQ(actual_int, expected_int);
+	EXPECT_EQ(actual_vi, expected_vi);
 }
