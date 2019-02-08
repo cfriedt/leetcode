@@ -103,6 +103,7 @@ public:
 
 protected:
 	static inline int calculate_nslices( int len ) {
+		// reduces to sum(0,n){ i } = sum(1,n){ i } = n(n+1)/2
 		int r;
 		for( r = 0; len >= 3; r += len - 3 + 1, len-- );
 		return r;
