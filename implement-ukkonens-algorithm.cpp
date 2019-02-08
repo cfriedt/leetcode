@@ -35,7 +35,7 @@ class Ukkonen {
 public:
 
 	Ukkonen() : Ukkonen( "" ) {}
-	Ukkonen( const string & text ) : text( text ), root( make_shared<State>() ) {
+	Ukkonen( const string & text ) : text( text ) {
 		buildSuffixTree();
 	}
 
@@ -84,8 +84,12 @@ protected:
 		size_t k;
 		size_t i;
 
+		root = make_shared<State>();
+
 		for(
-			s = root
+			s = root,
+				i = size_t(-1),
+				k = 0
 				;
 			i + 1 < text.size()
 				;
@@ -149,10 +153,12 @@ protected:
 		size_t p_prime;
 		shared_ptr<State> s_prime;
 
-		if ( k <= p ) {
+		bool found_tk_transition;
 
-			tk = text[ k ];
-			findTkTransition( *s, tk, k_prime, p_prime, s_prime );
+		tk = text[ k ];
+		found_tk_transition = findTkTransition( *s, tk, k_prime, p_prime, s_prime );
+
+		if ( found_tk_transition && k <= p ) {
 
 			if( t == text[ k_prime + p - k + 1 ] ) {
 
