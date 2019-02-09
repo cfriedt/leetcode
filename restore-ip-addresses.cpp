@@ -121,5 +121,5 @@ protected:
 	}
 };
 
-const string Solution::octet_pattern( "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]?)$" );
+const string Solution::octet_pattern( "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$" );
 const regex Solution::octet_regex( Solution::octet_pattern, std::regex_constants::ECMAScript );
