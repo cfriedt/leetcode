@@ -51,3 +51,19 @@ TEST( RestoreIpAddresses, Test_too_long ) {
 	unordered_set<string> actual_uss( output.begin(), output.end() );
 	EXPECT_EQ(actual_uss, expected_uss);
 }
+
+TEST( RestoreIpAddresses, Test_invalid ) {
+	string s = "abcdefghijkl";
+	unordered_set<string> expected_uss;
+	vector<string> output = Solution().restoreIpAddresses(s);
+	unordered_set<string> actual_uss( output.begin(), output.end() );
+	EXPECT_EQ(actual_uss, expected_uss);
+}
+
+TEST( RestoreIpAddresses, Test_leading_zeros ) {
+	string s = "010010";
+	unordered_set<string> expected_uss({"0.10.0.10","0.100.1.0"});
+	vector<string> output = Solution().restoreIpAddresses(s);
+	unordered_set<string> actual_uss( output.begin(), output.end() );
+	EXPECT_EQ(actual_uss, expected_uss);
+}
