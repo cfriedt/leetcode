@@ -66,6 +66,9 @@ public:
 		// dot goes". Could probably be done recursively. I'm just not sure
 		// if it's faster.
 		//
+		// Also, cannot simply use sscanf to parse the integer value, because
+		// it will (for some reason), accept leading zeros.
+		//
 		// Analysis:
 		// O(1) in time, or possibly O( M ) where M is the length of the
 		// internal automata used to parse the IP address string.
