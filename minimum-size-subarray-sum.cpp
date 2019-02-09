@@ -83,12 +83,9 @@ public:
 					// shortest possible answer found, so break early
 					break;
 				}
-				if ( L + 1 < nums.size() || L + 1 < R ) {
+				if ( L + 1 < nums.size() ) {
 					sum -= nums[ L ];
 					L++;
-				} else {
-					// reached the end of the array
-					break;
 				}
 			}
 		}
