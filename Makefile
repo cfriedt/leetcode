@@ -30,13 +30,15 @@ CXXFLAGS :=
 LDFLAGS :=
 LDLIBS :=
 GCOVFLAGS :=
+GCOVRFLAGS :=
 CTIDYFLAGS :=
 
 CXXFLAGS += -Wall -Werror -Wextra -g -O0 -std=c++11
 
 # gcov
 CXXFLAGS += -fprofile-arcs -ftest-coverage
-GCOV_FLAGS += -r
+GCOVFLAGS += -r
+GCOVRFLAGS += -r $(shell pwd) -e '.*-test.cpp' -e 'util/'
 
 CPPFLAGS += -I/usr/include/gtest
 LDLIBS += -lgtest -lgtest_main
@@ -104,10 +106,10 @@ gcov: $(EXE)
 		exit 0; \
 	fi; \
 	for i in $(EXE); do \
-		gcov $(GCOV_FLAGS) $${i}.cpp &> /dev/null; \
+		gcov $(GCOVFLAGS) $${i}.cpp &> /dev/null; \
 	done; \
-	gcovr -e '.*-test.cpp'; \
-	PCNT=`gcovr -r $(shell pwd) -e '.*-test.cpp' | grep "^TOTAL" | tail -n 1 | awk '{print $$4}' | sed -e 's|%||'`; \
+	gcovr $(GCOVRFLAGS); \
+	PCNT=`gcovr $(GCOVRFLAGS) | grep "^TOTAL" | tail -n 1 | awk '{print $$4}' | sed -e 's|%||'`; \
 	if [ $${PCNT} -lt 90 ]; then \
 		exit 1; \
 	fi
