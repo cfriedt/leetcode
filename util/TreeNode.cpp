@@ -29,7 +29,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include <gtest.h>
+#include <gtest/gtest.h>
 
 #include "split.hpp"
 

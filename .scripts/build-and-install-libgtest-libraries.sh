@@ -1,30 +1,20 @@
 #!/bin/sh
 
-E() {
-	local r=$?
-	if [ 0 -ne $r ]; then
-		r=1
-	fi
-	if [ "" != "$*" ]; then
-		echo "E: $*" > /dev/stderr
-		echo "" > /dev/stderr
-	fi
+set -e
 
-	usage
+# N.B. Older Ubuntu versions do not carry the "googletest" package
+# (which includes Google Mock and Google Test), so better to just
+# install from source / git.
 
-	exit $r
-}
+cd /tmp
+rm -Rf googletest
 
-cd /usr/src/gtest || E failed to change to /usr/src/gtest
-cmake -DBUILD_SHARED_LIBS=ON || E "cmake -DBUILD_SHARED_LIBS=ON failed"
-make || E make failed
-cp *.so /usr/lib/ || E failed to copy .so files to /usr/lib
+git clone https://github.com/google/googletest.git
+cd googletest
 
-#cd /usr/src/gtest || E failed to change to /usr/src/gtest
-#make clean || E failed to clean source directory
-#rm -Rf CMakeCache.txt CMakeFiles/ || E failed to clean cmake files
-#cmake || E cmake failed
-#make || E make failed
-#cp *.a /usr/lib/ || E failed to copy .a files to /usr/lib
-
+# installs headers to /usr/include/gtest /usr/include/gmock
+# install static libraries to /usr/lib
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr . && make -j$(nproc --all) all install
+# install shared libraries to /usr/lib
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DBUILD_SHARED_LIBS=ON && make -j$(nproc --all) all install
 

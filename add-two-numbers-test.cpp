@@ -26,7 +26,7 @@
 
 using namespace std;
 
-#include <gtest.h>
+#include <gtest/gtest.h>
 
 #include "util/ListNode.cpp"
 
