@@ -24,7 +24,7 @@
 
 #include <unordered_set>
 
-#include <gtest.h>
+#include <gtest/gtest.h>
 
 #include "restore-ip-addresses.cpp"
 

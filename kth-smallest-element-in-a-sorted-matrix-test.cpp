@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include <gtest.h>
+#include <gtest/gtest.h>
 
 #include "kth-smallest-element-in-a-sorted-matrix.cpp"
 
