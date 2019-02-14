@@ -22,66 +22,64 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <sstream>
 #include <vector>
 
-#include "ListNode.hpp"
-#include "split.hpp"
+#include <gtest.h>
 
-using namespace std;
+#include "util/ListNode.cpp"
 
-ListNode *ListNode_from_string( const string & s ) {
+#include "odd-even-linked-list.cpp"
 
-	ListNode head(-1);
-	ListNode *it;
-
-	string _s( s );
-
-	replace( _s.begin(), _s.end(), '-', ' ' );
-	replace( _s.begin(), _s.end(), '>', ' ' );
-
-	vector<string> elements = split( _s );
-
-	it = & head;
-	for( auto & e: elements ) {
-		it->next = new ListNode( stoi( e ) );
-		it = it->next;
+class OddEvenLinkedList : public ::testing::Test {
+public:
+	OddEvenLinkedList() : head( nullptr ), output( nullptr ) {}
+protected:
+	string input;
+	ListNode *head;
+	vector<ListNode *> nodes;
+	ListNode *output;
+	string expected_string;
+	string actual_string;
+	Solution soln;
+	void mSetUp() {
+		head = ListNode_from_string( input );
 	}
-
-	return head.next;
-}
-
-string ListNode_to_string( ListNode *head ) {
-	stringstream ss;
-	ListNode *it;
-	for( it =  head; it; it = it->next ) {
-		ss << it->val;
-		if ( nullptr == it->next ) {
-			break;
+	void doTest() {
+		ListNode *output = soln.oddEvenList(head);
+		actual_string = ListNode_to_string( output );
+		EXPECT_EQ( actual_string, expected_string );
+	}
+	void TearDown() override {
+		for( auto & n: nodes ) {
+			delete n;
 		}
-		ss << "->";
 	}
-	return ss.str();
+};
+
+TEST_F( OddEvenLinkedList, Test_1_2_3_4_5 ) {
+	input = "1->2->3->4->5";
+	expected_string = "1->3->5->2->4";
+	mSetUp();
+	doTest();
 }
 
-void ListNode_cleanup( ListNode **head ) {
-
-	if ( nullptr == head || nullptr == *head ) {
-		return;
-	}
-
-	ListNode *it = *head;
-
-	ListNode_cleanup( & it->next );
-
-	delete it;
-
-	*head = nullptr;
+TEST_F( OddEvenLinkedList, Test_2_1_3_5_6_4_7 ) {
+	input = "2->1->3->5->6->4->7";
+	expected_string = "2->3->6->7->1->5->4";
+	mSetUp();
+	doTest();
 }
 
-size_t ListNode_size( ListNode *head ) {
-	size_t r;
-	for( r = 0; nullptr != head; r++, head = head->next );
-	return r;
+TEST_F( OddEvenLinkedList, Test_nil ) {
+	input = "";
+	expected_string = "";
+	mSetUp();
+	doTest();
+}
+
+TEST_F( OddEvenLinkedList, Test_1 ) {
+	input = "1";
+	expected_string = "1";
+	mSetUp();
+	doTest();
 }

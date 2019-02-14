@@ -22,66 +22,54 @@
  * SOFTWARE.
  */
 
-#include <algorithm>
-#include <sstream>
-#include <vector>
 
-#include "ListNode.hpp"
-#include "split.hpp"
+#include <cstddef>
 
 using namespace std;
 
-ListNode *ListNode_from_string( const string & s ) {
+class Solution {
+public:
 
-	ListNode head(-1);
-	ListNode *it;
+	// https://leetcode.com/problems/odd-even-linked-list/
 
-	string _s( s );
+	ListNode* oddEvenList(ListNode* head) {
+		// Assumptions:
+		// - 1-indexed, so the head pointer is '1'
+		//
+		// Observations:
+		// - maintain e.g. a bool to indicate whether we are serving even or odd
+		// - maintain a pointer to first / last element in odd / even
+		// - makes appending O(1) and lets us keep a reference for
+		//   concatenating at the end
+		// - visit each node exactly once, O( N ) in time and O( 1 ) in space
 
-	replace( _s.begin(), _s.end(), '-', ' ' );
-	replace( _s.begin(), _s.end(), '>', ' ' );
-
-	vector<string> elements = split( _s );
-
-	it = & head;
-	for( auto & e: elements ) {
-		it->next = new ListNode( stoi( e ) );
-		it = it->next;
-	}
-
-	return head.next;
-}
-
-string ListNode_to_string( ListNode *head ) {
-	stringstream ss;
-	ListNode *it;
-	for( it =  head; it; it = it->next ) {
-		ss << it->val;
-		if ( nullptr == it->next ) {
-			break;
+		if ( nullptr == head ) {
+			return nullptr;
 		}
-		ss << "->";
+
+		enum {
+			ODD,
+			EVEN,
+		};
+
+		ListNode *m_head[2]{};
+		ListNode *m_tail[2]{};
+
+		ListNode *it = head;
+		bool odd = ODD;
+		for( ; it ; it = it->next, odd ^= 1 ) {
+			if ( nullptr == m_head[ odd ] ) {
+				m_head[ odd ] = m_tail[ odd ] = it;
+			} else {
+				m_tail[ odd ]->next = it;
+				m_tail[ odd ] = m_tail[ odd ]->next;
+			}
+		}
+		m_tail[ ODD ]->next = m_head[ EVEN ];
+        if ( nullptr != m_tail[ EVEN ] ) {
+		    m_tail[ EVEN ]->next = nullptr;
+        }
+
+		return m_head[ ODD ];
 	}
-	return ss.str();
-}
-
-void ListNode_cleanup( ListNode **head ) {
-
-	if ( nullptr == head || nullptr == *head ) {
-		return;
-	}
-
-	ListNode *it = *head;
-
-	ListNode_cleanup( & it->next );
-
-	delete it;
-
-	*head = nullptr;
-}
-
-size_t ListNode_size( ListNode *head ) {
-	size_t r;
-	for( r = 0; nullptr != head; r++, head = head->next );
-	return r;
-}
+};
