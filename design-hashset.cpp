@@ -123,7 +123,7 @@ protected:
 
 	static const function<size_t(int)> hasher;
 
-	explicit MyHashSet( size_t n_buckets )
+	MyHashSet( size_t n_buckets )
 	: n_items( 0 ), buckets( n_buckets, nullptr )
 	{
 	}
@@ -132,8 +132,7 @@ protected:
 		int key;
 		size_t hashed_key;
 		bucket_list_node *next;
-		bucket_list_node() : bucket_list_node( 0 ) {}
-		explicit bucket_list_node( int key ) : key( key ), hashed_key( hasher( key ) ), next( nullptr ) {}
+		bucket_list_node( int key ) : key( key ), hashed_key( hasher( key ) ), next( nullptr ) {}
 	};
 
 	size_t n_items;
