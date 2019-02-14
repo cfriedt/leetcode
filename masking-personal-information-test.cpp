@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include <gtest.h>
+#include <gtest/gtest.h>
 
 #include "masking-personal-information.cpp"
 

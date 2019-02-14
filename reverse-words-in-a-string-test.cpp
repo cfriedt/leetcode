@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include <gtest.h>
+#include <gtest/gtest.h>
 
 #include "reverse-words-in-a-string.cpp"
 

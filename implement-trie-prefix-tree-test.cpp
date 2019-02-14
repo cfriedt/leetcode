@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include <gtest.h>
+#include <gtest/gtest.h>
 
 #include "implement-trie-prefix-tree.cpp"
 TEST( ImplementTriePrefixTree, Test_Example1 ) {

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#include <gtest.h>
+#include <gtest/gtest.h>
 
 #include "string-to-integer-atoi.cpp"
 

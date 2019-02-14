@@ -40,11 +40,10 @@ CXXFLAGS += -fprofile-arcs -ftest-coverage
 GCOVFLAGS += -r
 GCOVRFLAGS += -r $(shell pwd) -e '.*-test.cpp' -e 'util/'
 
-CPPFLAGS += -I/usr/include/gtest
-LDLIBS += -lgtest -lgtest_main
+CPPFLAGS += $(shell pkg-config --cflags gtest)
+LDLIBS += $(shell pkg-config --libs gtest_main)
 
 CPPFLAGS += -Iutil
-LDFLAGS += -Lutil
 
 CTIDYCHECKS :=
 CTIDYCHECKS += clang-analyzer-core*
