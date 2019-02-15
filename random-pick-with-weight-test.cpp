@@ -52,6 +52,21 @@ TEST( RandomPickWithWeight, Test_1000000 ) {
 	EXPECT_EQ(actual_int, expected_int);
 }
 
+TEST( RandomPickWithWeight, Test_1_3_1 ) {
+	vector<int> w({1,3,1});
+	Solution soln(w);
+
+	size_t n1s = 0;
+	for( size_t i = 0; i < 5; i++ ) {
+		size_t idx = soln.pickIndex();
+		if ( 1 == idx ) {
+			n1s++;
+		}
+	}
+
+	EXPECT_GT( n1s, 0 );
+}
+
 vector<float> createHistogram( const vector<int> & w ) {
 	vector<float> chist( w.size() );
 	size_t sum_of_weights = accumulate( w.begin(), w.end(), 0 );
