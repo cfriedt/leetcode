@@ -28,28 +28,39 @@
 
 using namespace std;
 
-class MyHashSet {
+class MyHashMap {
 public:
 
 	// https://leetcode.com/problems/design-hashset
 
-	MyHashSet()
+	MyHashMap()
 	: n_items( 0 ), buckets( bucket_block_size, nullptr )
 	{
 	}
 
-	void add( int key ) {
-		add( key, nullptr );
+	void put( int key, int value ) {
+		put( key, value, nullptr );
+	}
+
+	int get( int key ) {
+		size_t hash = hasher( key );
+		uint32_t modded = hash % buckets.size();
+
+		bucket_list_node *b;
+
+		for( b = buckets[ modded ]; nullptr != b && b->key != key; b = b->next );
+
+		if ( nullptr == b ) {
+			return -1;
+		} else {
+			return b->value;
+		}
 	}
 
 	void remove( int key ) {
 
-		if ( ! contains( key ) ) {
-			return;
-		}
-
-		size_t hashed_key = hasher( key );
-		uint32_t modded = hashed_key % buckets.size();
+		size_t hash = hasher( key );
+		uint32_t modded = hash % buckets.size();
 
 		bucket_list_node *b, *b_prev;
 		for( b_prev = nullptr, b = buckets[ modded ]; nullptr != b && b->key != key; b_prev = b, b = b->next );
@@ -67,8 +78,8 @@ public:
 
 	bool contains( int key ) {
 
-		size_t hashed_key = hasher( key );
-		uint32_t modded = hashed_key % buckets.size();
+		size_t hash = hasher( key );
+		uint32_t modded = hash % buckets.size();
 
 		bucket_list_node *b;
 
@@ -123,38 +134,40 @@ protected:
 
 	static const function<size_t(int)> hasher;
 
-	explicit MyHashSet( size_t n_buckets )
+	explicit MyHashMap( size_t n_buckets )
 	: n_items( 0 ), buckets( n_buckets, nullptr )
 	{
 	}
 
 	struct bucket_list_node {
 		int key;
-		size_t hashed_key;
+		int value;
+		size_t hash;
 		bucket_list_node *next;
-		bucket_list_node() : bucket_list_node( 0 ) {}
-		explicit bucket_list_node( int key ) : key( key ), hashed_key( hasher( key ) ), next( nullptr ) {}
+		bucket_list_node() : bucket_list_node(0,0) {}
+		explicit bucket_list_node( int key, int value ) : key( key ), value( value ), hash( hasher( key ) ), next( nullptr ) {}
 	};
 
 	size_t n_items;
 	vector<bucket_list_node *> buckets;
 
-	void add( int key, bucket_list_node *bucket ) {
+	void put( int key, int value, bucket_list_node *bucket ) {
 
-		size_t hashed_key;
+		size_t hash;
 		if ( nullptr == bucket ) {
-			hashed_key = hasher( key );
+			hash = hasher( key );
 		} else {
 			key = bucket->key;
-			hashed_key = bucket->hashed_key;
+			value = bucket->value;
+			hash = bucket->hash;
 		}
 
-		uint32_t modded = hashed_key % buckets.size();
+		uint32_t modded = hash % buckets.size();
 
 		if ( nullptr == buckets[ modded ] ) {
 
 			if ( nullptr == bucket ) {
-				buckets[ modded ] = new bucket_list_node( key );
+				buckets[ modded ] = new bucket_list_node( key, value );
 			} else {
 				buckets[ modded ] = bucket;
 			}
@@ -169,10 +182,10 @@ protected:
 			for( b = buckets[ modded ]; nullptr != b->next && b->key != key; b = b->next );
 
 			if ( b->key == key ) {
-				return;
+				b->value = value;
 			} else {
 				if ( nullptr == bucket ) {
-					b->next = new bucket_list_node( key );
+					b->next = new bucket_list_node( key, value );
 				} else {
 					b->next = bucket;
 				}
@@ -184,7 +197,7 @@ protected:
 		}
 	}
 
-	void addAll( size_t n_items, vector<bucket_list_node *> & buckets ) {
+	void putAll( size_t n_items, vector<bucket_list_node *> & buckets ) {
 		for( size_t i = 0; i < buckets.size() && n_items > 0; i++ ) {
 			vector<bucket_list_node *> stack;
 			for( bucket_list_node *b = buckets[ i ]; b; b = b->next ) {
@@ -192,7 +205,7 @@ protected:
 			}
 			for( auto & b: stack ) {
 				b->next = nullptr;
-				add( -1, b );
+				put( -1, -1, b );
 			}
 		}
 	}
@@ -217,8 +230,8 @@ protected:
 			if ( lf >= load_factor_high ) {
 				for( ; lf >= ( load_factor_low + load_factor_high ) / 2; n_buckets += bucket_block_size, lf = loadFactor( n_items, n_buckets ) );
 
-				MyHashSet new_bucket_list( n_buckets );
-				new_bucket_list.addAll( n_items, buckets );
+				MyHashMap new_bucket_list( n_buckets );
+				new_bucket_list.putAll( n_items, buckets );
 
 				buckets = new_bucket_list.buckets;
 			}
@@ -227,8 +240,8 @@ protected:
 				for( ; n_buckets > bucket_block_size && lf < ( load_factor_low + load_factor_high ) / 2; n_buckets -= bucket_block_size, lf = loadFactor( n_items, n_buckets ) );
 
 				if ( 0 != n_buckets ) {
-					MyHashSet new_bucket_list( n_buckets );
-					new_bucket_list.addAll( n_items, buckets );
+					MyHashMap new_bucket_list( n_buckets );
+					new_bucket_list.putAll( n_items, buckets );
 
 					buckets = new_bucket_list.buckets;
 				}
@@ -237,4 +250,4 @@ protected:
 	}
 };
 
-const function<size_t(int)> MyHashSet::hasher = hash<int>();
+const function<size_t(int)> MyHashMap::hasher = hash<int>();
