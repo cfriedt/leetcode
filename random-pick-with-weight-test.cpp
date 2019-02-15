@@ -26,26 +26,26 @@
 
 #include "random-pick-with-weight.cpp"
 
-TEST( RandomPickWithWeight, Test_2_7_11_15_9 ) {
-	vector<int> nums({2,7,11,15});
-	int target( 9 );
-	vector<int> expected_vi({0,1});
-	vector<int> actual_vi = Solution().twoSum(nums, target);
-	EXPECT_EQ(actual_vi, expected_vi);
+TEST( RandomPickWithWeight, Test_nil ) {
+	vector<int> w;
+	Solution soln(w);
+	int expected_int = 0;
+	int actual_int = soln.pickIndex();
+	EXPECT_EQ(actual_int, expected_int);
 }
 
-TEST( TwoSum, Test_3_2_4_6 ) {
-	vector<int> nums({3,2,4});
-	int target( 6 );
-	vector<int> expected_vi({1,2});
-	vector<int> actual_vi = Solution().twoSum(nums, target);
-	EXPECT_EQ(actual_vi, expected_vi);
+TEST( RandomPickWithWeight, Test_1 ) {
+	vector<int> w({1});
+	Solution soln(w);
+	int expected_int = 0;
+	int actual_int = soln.pickIndex();
+	EXPECT_EQ(actual_int, expected_int);
 }
 
-TEST( TwoSum, Test_3_3_6 ) {
-	vector<int> nums({3,3});
-	int target( 6 );
-	vector<int> expected_vi({0,1});
-	vector<int> actual_vi = Solution().twoSum(nums, target);
-	EXPECT_EQ(actual_vi, expected_vi);
+TEST( RandomPickWithWeight, Test_1000000 ) {
+	vector<int> w({1000000});
+	Solution soln(w);
+	int expected_int = 0;
+	int actual_int = soln.pickIndex();
+	EXPECT_EQ(actual_int, expected_int);
 }
