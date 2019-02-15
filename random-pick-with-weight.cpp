@@ -34,7 +34,7 @@ public:
 
     Solution(vector<int> w) {
         // I think the easiest solution is to create a vector of indices, repeating elements for how many times w[i] is present
-        // and then just use a random % indices.size() to choose an element at random.
+        // and then just use random() % indices.size() to choose an index.
         //
     	// vector<int> indices;
     	// ctor:
