@@ -22,8 +22,11 @@
  * SOFTWARE.
  */
 
+#include <cmath>
 #include <cstdlib>
+#include <iomanip>
 #include <numeric>
+#include <unordered_map>
 #include <vector>
 using namespace std;
 
@@ -76,7 +79,9 @@ public:
     	//
         // To improve times for pickIndex, which will be called up to 10000 times,
     	// the cumulative histogram could be kept inside of an ordered map (e.g. r-b tree)
-        // The random percent would need to be rounded up to a floating point multiple of some number.
+        // The random percent would need to be rounded up to a floating point multiple
+    	// of 1.0 / float( sum_of_weights );
+    	//
         //
         // This would improve times for K pickIndex from O( KN ) to O( K log N )
         // The overall time to construct and pick K random indices would then become
@@ -86,12 +91,19 @@ public:
     	// Space would still be O( N )
 
         size_t sum_of_weights = accumulate( w.begin(), w.end(), 0 );
+        if ( 0 == sum_of_weights ) {
+        	iota = 0.0;
+        } else {
+        	iota = 1.0 / float( sum_of_weights );
+        	iota = ::roundf( iota * 10000 ) / 10000;
+            //cerr << "iota is " << iota << endl;
+        }
 
         float cumulative = 0;
         for( size_t i = 0; i < w.size(); i++ ) {
-            float this_pcnt = float( w[i] ) / float( sum_of_weights );
-            cumulative += this_pcnt;
-            chist.push_back( cumulative );
+        	cumulative += float( w[ i ] ) / float( sum_of_weights );
+            chist[ cumulative ] = i;
+            //cerr << "chist[ " << cumulative << " ] = " << i << endl;
         }
     }
 
@@ -103,18 +115,37 @@ public:
 
         float pcnt = randomPercent();
 
-        size_t i;
-        for( i = 0; i < chist.size(); i++ ) {
-            if ( pcnt <= chist[ i ] ) {
-                break;
-            }
+        //cerr << "pcnt: " << pcnt << endl;
+
+        float rounded = pcnt;
+
+        rounded += iota - ::fmod( pcnt, iota );
+
+        //cerr << "rounded: " << rounded << endl;
+
+        for( ; rounded < 1; ) {
+        	//cerr << "considering: " << rounded << endl;
+
+        	if ( chist.count( rounded ) ) {
+        		break;
+        	}
+
+        	if ( rounded + iota > 1 ) {
+        		rounded = 1;
+        	} else {
+        		rounded += iota;
+        	}
         }
 
-        return i;
+        //cerr << "using: " << rounded << endl;
+
+        return chist[ rounded ];
     }
 
 protected:
-    vector<float> chist;
+    unordered_map<float,size_t> chist;
+
+    float iota;
 
     float randomPercent() {
         return float( ::random() ) / float( RAND_MAX );
