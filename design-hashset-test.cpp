@@ -159,10 +159,9 @@ TEST( DesignHashset, Test_1000000Random ) {
 
 		if ( add ) {
 			hashSet.add( x );
+			ASSERT_TRUE( hashSet.contains( x ) );
 		} else {
 			hashSet.remove( x );
 		}
-
-		ASSERT_TRUE( hashSet.contains( x ) );
 	}
 }
