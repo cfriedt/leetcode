@@ -26,8 +26,6 @@
 
 using namespace std;
 
-int guess( int num );
-
 class Solution {
 public:
 
@@ -69,7 +67,7 @@ public:
 				M = ( L + R ) / 2;
 			}
 
-			int r = guess( M );
+			int r = +1;
 
 			if ( 0 == r ) {
 
