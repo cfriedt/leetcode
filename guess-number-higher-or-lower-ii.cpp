@@ -49,6 +49,8 @@ public:
 		//
 		// Clearly, a binary search is still better than linear search
 		// because the linear search is a superset of the binary search.
+		//
+		// Can we do even better?
 
 		size_t sum = 0;
 
@@ -57,7 +59,7 @@ public:
 
 			int M;
 
-			if ( L == INT_MAX && R == INT_MAX && 0 == guess( INT_MAX ) ) {
+			if ( L == INT_MAX && R == INT_MAX ) {
 				return int( sum );
 			}
 

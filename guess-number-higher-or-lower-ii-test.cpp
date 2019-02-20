@@ -25,39 +25,39 @@
 #include <climits>
 #include <gtest/gtest.h>
 
-#include "guess-number-higher-or-lower.cpp"
+#include "guess-number-higher-or-lower-ii.cpp"
 
 TEST( GuessNumberHigherOrLower, Test_1__0 ) {
 	int n = 1;
 	int expected_int = -1;
-	int actual_int = Solution().guessNumber( n );
+	int actual_int = Solution().getMoneyAmount( n );
 	EXPECT_EQ(actual_int, expected_int);
 }
 
 TEST( GuessNumberHigherOrLower, Test_1__2 ) {
 	int n = 1;
 	int expected_int = -1;
-	int actual_int = Solution().guessNumber( n );
+	int actual_int = Solution().getMoneyAmount( n );
 	EXPECT_EQ(actual_int, expected_int);
 }
 
 TEST( GuessNumberHigherOrLower, Test_10__6 ) {
 	int n = 10;
 	int expected_int = 6;
-	int actual_int = Solution().guessNumber( n );
+	int actual_int = Solution().getMoneyAmount( n );
 	EXPECT_EQ(actual_int, expected_int);
 }
 
 TEST( GuessNumberHigherOrLower, Test_Yuuuuge ) {
 	int n = INT_MAX;
 	int expected_int = 1073741823;
-	int actual_int = Solution().guessNumber( n );
+	int actual_int = Solution().getMoneyAmount( n );
 	EXPECT_EQ(actual_int, expected_int);
 }
 
 TEST( GuessNumberHigherOrLower, Test_Yuuuuge2 ) {
 	int n = INT_MAX;
 	int expected_int = INT_MAX;
-	int actual_int = Solution().guessNumber( n );
+	int actual_int = Solution().getMoneyAmount( n );
 	EXPECT_EQ(actual_int, expected_int);
 }
