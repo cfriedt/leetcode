@@ -54,8 +54,11 @@ public:
 
 			int M;
 
-			if ( L == INT_MAX && R == INT_MAX && 0 == guess( INT_MAX ) ) {
-				return INT_MAX;
+			if ( L == R ) {
+				if ( 0 == guess( INT_MAX ) ) {
+					return INT_MAX;
+				}
+				return -1;
 			}
 
 			if ( L > INT_MAX / 2 || R > INT_MAX / 2 ) {
