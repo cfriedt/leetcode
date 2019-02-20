@@ -34,63 +34,72 @@ public:
 	int getMoneyAmount(int n) {
 
 		// Assumptions
-		// - the idea is to guess the number as fast as possible
-		// - assume n is large
-		// - assume range is inclusive [1,n]
-		// - if secret number is not in [1,n], return -1
+		// - idea is not to guess as quickly as possible, but as cheaply as
+		//   possible!
 		//
-		// Observations
-		// - numbers 1..n are already sorted :-)
-		// - Brute force: O( N ) time, O( 1 ) space
-		// - Binary Search: O( logN ) time, O( 1 ) space
-		// - Want to identify the corner case that n < 1
-		// - Want to identify the corner case that the secret number is < 1
-		// - Want to identify the corner case that n is INT_MAX
+		// - this does not correspond 1:1 with binary search
 		//
-		// Clearly, a binary search is still better than linear search
-		// because the linear search is a superset of the binary search.
+		// e.g.
 		//
-		// Can we do even better?
+		// Say N = 4
+		// L   R    M   sum
+		// 1   4    1   0
+		// 2   4    3   1
+		// 4   4    -   4
+		//
+		// is cheaper than a binary search, which would be
+		// 1   4    2   0
+		// 3   4    3   2
+		// 4   4    -   5
+		//
+		// N   cost   choices
+		// 1   0      1
+		// 2   1      1,2
+		// 3   3      1,2,3
+		// 4   4      1,3,4
+		// 5   6      2,4,5
+		// 6   8      3,5,6
+		// ...
+		// 10  16
+		//
+		// [ 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 ]
+		//
+		// Say N = 5
+		// 1 + 2 + 3 = 6
+		// 1 + 3
+		// 3   4    3   2
+		// 4   4    -   5
 
 		size_t sum = 0;
+
+		if ( 1 == n ) {
+			return 0;
+		}
 
 		int L, R;
 		for( L = 1, R = n; L <= R; ) {
 
 			int M;
 
-			if ( L == INT_MAX && R == INT_MAX ) {
+			if ( L == R ) {
 				return int( sum );
 			}
 
-			if ( L > INT_MAX / 2 || R > INT_MAX / 2 ) {
-				M = L/2 + R/2;
+			if ( 1 == (L % 2 ) ) {
+				M = L;
 			} else {
-				M = ( L + R ) / 2;
+				if ( L > INT_MAX / 2 || R > INT_MAX / 2 ) {
+					M = L/2 + R/2;
+				} else {
+					M = ( L + R ) / 2;
+				}
 			}
 
-			int r = +1;
-
-			if ( 0 == r ) {
-
+			if ( n == M ) {
 				return int( sum );
-
-			} else if ( -1 == r ) {
-
-				if ( 1 == M ) {
-					break;
-				}
-
-				R = M - 1;
-
-			} else if ( +1 == r ) {
-
-				if ( n == M ) {
-					break;
-				}
-
-				L = M + 1;
 			}
+
+			L = M + 1;
 
 			sum += M;
 		}
