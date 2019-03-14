@@ -53,3 +53,10 @@ TEST( FruitIntoBaskets, Test_3_3_3_1_2_1_1_2_3_3_4 ) {
 	int actual_int = Solution().totalFruit(tree);
 	EXPECT_EQ(actual_int, expected_int);
 }
+
+TEST( FruitIntoBaskets, Test_1_0_1_4_1_4_1_2_3) {
+	vector<int> tree({1,0,1,4,1,4,1,2,3});
+	int expected_int = 5;
+	int actual_int = Solution().totalFruit(tree);
+	EXPECT_EQ(actual_int, expected_int);
+}

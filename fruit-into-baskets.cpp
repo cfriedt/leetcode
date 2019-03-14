@@ -22,44 +22,61 @@
  * SOFTWARE.
  */
 
-#include <array>
 #include <vector>
+#include <numeric>
 
 using namespace std;
 
 class Solution {
-public:
 
 	// https://leetcode.com/problems/fruit-into-baskets/
 
-	int totalFruit(vector<int>& tree) {
-		int most_fruit = 0;
+public:
+    int totalFruit(vector<int>& tree) {
+        // the problem here is to find the two largest contiguous blocks that consecutive. It can be done in linear time.
 
-		for( size_t starting_tree = 0; starting_tree < tree.size(); starting_tree++ ) {
+        int total;
+        int most = 0;
 
-			array<int,2> basket({-1,-1});
-			vector<int> fruit;
+        array<int,2> basket({-1,-1});
+        array<int,2> count({0,0});
 
-			for( size_t i = starting_tree; i < tree.size(); i++ ) {
-				if ( false ) {
-				} else if ( tree[ i ] ==  basket[ 0 ] || tree[ i ] ==  basket[ 1 ] ) {
-					fruit.push_back( tree[ i ] );
-				} else if( -1 == basket[ 0 ] ) {
-					basket[ 0 ] = tree[ i ];
-					fruit.push_back( tree[ i ] );
-				} else if( -1 == basket[ 1 ] ) {
-					basket[ 1 ] = tree[ i ];
-					fruit.push_back( tree[ i ] );
-				} else {
-					break;
-				}
-			}
+        for( int i = 0; i < int( tree.size() ); i++ ) {
 
-			if ( int( fruit.size() ) > most_fruit ) {
-				most_fruit = fruit.size();
-			}
-		}
+            if ( false ) {
+            } else if ( basket[0] == tree[ i ] ) {
+                count[ 0 ]++;
+            } else if ( basket[ 1 ] == tree[ i ] ) {
+                count[ 1 ]++;
+            } else if ( -1 == basket[ 0 ] ) {
+                basket[ 0 ] = tree[ i ];
+                count[ 0 ] = 1;
+            } else if ( -1 == basket[ 1 ] ) {
+                basket[ 1 ] = tree[ i ];
+                count[ 1 ] = 1;
+            } else {
+                total = accumulate( count.begin(), count.end(), 0 );
+                cout << "total: " << total << endl;
+                if ( total > most ) {
+                    most = total;
+                    cout << "most: " << most << endl;
+                }
 
-		return most_fruit;
-	}
+		basket[ 0 ] = basket[ 1 ];
+		count[ 0 ] = count[ 1 ];
+		basket[ 1 ] = tree[ i ];
+		count[ 1 ] = 1;
+            }
+            cout << basket[ 0 ] << ":" << count[ 0 ] << ", " << basket[ 1 ] << ":" << count[ 1 ] << endl;
+        }
+
+        total = accumulate( count.begin(), count.end(), 0 );
+        cout << "total: " << total << endl;
+        if ( total > most ) {
+            most = total;
+            cout << "most: " << most << endl;
+        }
+
+        return most;
+    }
 };
