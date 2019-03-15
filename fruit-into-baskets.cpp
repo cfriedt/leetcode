@@ -32,51 +32,60 @@ class Solution {
 	// https://leetcode.com/problems/fruit-into-baskets/
 
 public:
-    int totalFruit(vector<int>& tree) {
-        // the problem here is to find the two largest contiguous blocks that consecutive. It can be done in linear time.
+	int totalFruit(vector<int>& tree) {
+		// the problem here is to find the two largest contiguous blocks that are consecutive. It can be done in linear time.
 
-        int total;
-        int most = 0;
+		int most = 0;
 
-        array<int,2> basket({-1,-1});
-        array<int,2> count({0,0});
+		array<int, 2> basket({ -1, -1 });
+		array<int, 2> count({ 0, 0 });
 
-        for( int i = 0; i < int( tree.size() ); i++ ) {
+		if ( tree.size() <= 2 ) {
+			return tree.size();
+		}
 
-            if ( false ) {
-            } else if ( basket[0] == tree[ i ] ) {
-                count[ 0 ]++;
-            } else if ( basket[ 1 ] == tree[ i ] ) {
-                count[ 1 ]++;
-            } else if ( -1 == basket[ 0 ] ) {
-                basket[ 0 ] = tree[ i ];
-                count[ 0 ] = 1;
-            } else if ( -1 == basket[ 1 ] ) {
-                basket[ 1 ] = tree[ i ];
-                count[ 1 ] = 1;
-            } else {
-                total = accumulate( count.begin(), count.end(), 0 );
-                cout << "total: " << total << endl;
-                if ( total > most ) {
-                    most = total;
-                    cout << "most: " << most << endl;
-                }
+		for (int i = 0; i < int(tree.size()); i++) {
 
-		basket[ 0 ] = basket[ 1 ];
-		count[ 0 ] = count[ 1 ];
-		basket[ 1 ] = tree[ i ];
-		count[ 1 ] = 1;
-            }
-            cout << basket[ 0 ] << ":" << count[ 0 ] << ", " << basket[ 1 ] << ":" << count[ 1 ] << endl;
-        }
+			if (false) {
+			} else if (basket[0] == tree[i]) {
+				count[0]++;
+			} else if (basket[1] == tree[i]) {
+				count[1]++;
+			} else if (-1 == basket[0]) {
+				basket[0] = tree[i];
+				count[0] = 1;
+			} else if (-1 == basket[1]) {
+				basket[1] = tree[i];
+				count[1] = 1;
+			} else {
+				updateMost( count, most );
 
-        total = accumulate( count.begin(), count.end(), 0 );
-        cout << "total: " << total << endl;
-        if ( total > most ) {
-            most = total;
-            cout << "most: " << most << endl;
-        }
+				if ( basket[ 0 ] == tree[ i - 1 ] && basket[ 0 ] != tree[ i - 2 ] ) {
+					basket[ 1 ] = tree[ i ];
+					count[ 1 ] = 1;
+					count[ 0 ] = 1;
+				} else {
+					basket[0] = basket[1];
+					count[0] = count[1];
+					basket[1] = tree[i];
+					count[1] = 1;
+				}
+			}
+			cout << basket[0] << ":" << count[0] << ", " << basket[1] << ":" << count[1] << endl;
+		}
 
-        return most;
-    }
+		updateMost( count, most );
+
+		return most;
+	}
+protected:
+	static inline void updateMost(const array<int, 2> & count, int & most) {
+		int total = accumulate(count.begin(), count.end(), 0);
+		//cout << "total: " << total << endl;
+		if (total > most) {
+			most = total;
+			//cout << "most: " << most << endl;
+		}
+
+	}
 };
