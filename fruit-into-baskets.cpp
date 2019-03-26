@@ -60,8 +60,13 @@ public:
 			} else {
 				updateMost( count, most );
 
-				if ( basket[ 0 ] == tree[ i - 1 ] && basket[ 0 ] != tree[ i - 2 ] ) {
+				if ( false ) {
+				} else if ( basket[ 0 ] == tree[ i - 1 ] && basket[ 0 ] != tree[ i - 2 ] ) {
 					basket[ 1 ] = tree[ i ];
+					count[ 1 ] = 1;
+					count[ 0 ] = 1;
+				} else if ( basket[ 1 ] == tree[ i - 1 ] && basket[ 1 ] != tree[ i - 2 ] ) {
+					basket[ 0 ] = tree[ i ];
 					count[ 1 ] = 1;
 					count[ 0 ] = 1;
 				} else {
@@ -71,7 +76,7 @@ public:
 					count[1] = 1;
 				}
 			}
-			cout << basket[0] << ":" << count[0] << ", " << basket[1] << ":" << count[1] << endl;
+			//cout << basket[0] << ":" << count[0] << ", " << basket[1] << ":" << count[1] << endl;
 		}
 
 		updateMost( count, most );
