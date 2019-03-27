@@ -24,6 +24,7 @@
 
 #include <vector>
 #include <numeric>
+#include <utility>
 
 using namespace std;
 
@@ -33,64 +34,86 @@ class Solution {
 
 public:
 	int totalFruit(vector<int>& tree) {
-		// the problem here is to find the two largest contiguous blocks that are consecutive. It can be done in linear time.
-
-		int most = 0;
-
-		array<int, 2> basket({ -1, -1 });
-		array<int, 2> count({ 0, 0 });
 
 		if ( tree.size() <= 2 ) {
 			return tree.size();
 		}
 
-		for (int i = 0; i < int(tree.size()); i++) {
+		const size_t N = tree.size();
 
-			if (false) {
-			} else if (basket[0] == tree[i]) {
-				count[0]++;
-			} else if (basket[1] == tree[i]) {
-				count[1]++;
-			} else if (-1 == basket[0]) {
-				basket[0] = tree[i];
-				count[0] = 1;
-			} else if (-1 == basket[1]) {
-				basket[1] = tree[i];
-				count[1] = 1;
+		// DP, FTW!
+		// ================================
+		// i        |   | 0 1 2 3 4 5 6 7 8
+		// j        | 0 | 1 2 3 4 5 6 7 8 9
+		// tree     |   | 1 0 0 0 1 0 4 0 4
+		// type[0]  | - | 1 1 1 1 1 1 4 4 4
+		// type[1]  | - | - 0 0 0 0 0 0 0 0
+		// last[0]  | - | 0 0 0 0 4 4 6 6 8
+		// last[1]  | - | - 1 2 3 3 5 5 7 7
+		// count[0] | 0 | 1 1 1 1 2 2 1 1 2
+		// count[1] | 0 | 0 1 2 3 3 4 1 2 2
+		// most     | 0 | 1 2 3 4 5 6 6 6 6
+
+		vector<vector<int>> type( N + 1, vector<int>({-1,-1}) );
+		vector<vector<size_t>> last( N + 1, vector<size_t>({-1,-1}) );
+		vector<vector<size_t>> count( N + 1, vector<size_t>({0,0}) );
+		vector<size_t> most( N + 1, 0 );
+
+		for( size_t j = 1; j <= N; j++ ) {
+
+			size_t i = j - 1;
+
+			if ( false ) {
+			} else if ( -1 == last[ i ][ 0 ] ) {
+				type[ i ][ 0 ] = tree[ i ];
+				last[ i ][ 0 ] = i;
+				count[ i ][ 0 ] = 1;
+				if ( i > 0 ) {
+					count[ i ][ 1 ] = count[ i - 1 ][ 1 ];
+				}
+			} else if ( -1 == last[ i ][ 1 ] ) {
+				type[ i ][ 1 ] = tree[ i ];
+				last[ i ][ 1 ] = i;
+				count[ i ][ 1 ] = 1;
+				if ( i > 0 ) {
+					count[ i ][ 0 ] = count[ i - 1 ][ 0 ];
+				}
+			} else if ( tree[ i ] == type[ i - 1 ][ 0 ] ) {
+				type[ i ][ 0 ] = type[ i - 1 ][ 0 ];
+				type[ i ][ 1 ] = type[ i - 1 ][ 1 ];
+				last[ i ][ 0 ] = i;
+				last[ i ][ 1 ] = last[ i - 1 ][ 1 ];
+				count[ i ][ 0 ] = count[ i - 1 ][ 0 ] + 1;
+				count[ i ][ 1 ] = count[ i - 1 ][ 1 ];
+			} else if ( tree[ i ] == type[ i - 1 ][ 1 ] ) {
+				type[ i ][ 1 ] = type[ i - 1 ][ 1 ];
+				type[ i ][ 0 ] = type[ i - 1 ][ 0 ];
+				last[ i ][ 1 ] = i;
+				last[ i ][ 0 ] = last[ i - 1 ][ 0 ];
+				count[ i ][ 1 ] = count[ i - 1 ][ 1 ] + 1;
+				count[ i ][ 0 ] = count[ i - 1 ][ 0 ];
 			} else {
-				updateMost( count, most );
-
 				if ( false ) {
-				} else if ( basket[ 0 ] == tree[ i - 1 ] && basket[ 0 ] != tree[ i - 2 ] ) {
-					basket[ 1 ] = tree[ i ];
-					count[ 1 ] = 1;
-					count[ 0 ] = 1;
-				} else if ( basket[ 1 ] == tree[ i - 1 ] && basket[ 1 ] != tree[ i - 2 ] ) {
-					basket[ 0 ] = tree[ i ];
-					count[ 1 ] = 1;
-					count[ 0 ] = 1;
-				} else {
-					basket[0] = basket[1];
-					count[0] = count[1];
-					basket[1] = tree[i];
-					count[1] = 1;
+				} else if ( tree[ i ] == type[ i - 1 ][ 0 ] ) {
+					type[ i ][ 1 ] = tree[ i ];
+					type[ i ][ 0 ] = type[ i - 1 ][ 0 ];
+					last[ i ][ 1 ] = i;
+					last[ i ][ 0 ] = last[ i - 1 ][ 0 ];
+					if ( false ) {
+					} else if ( -1 == last[ ] ) {
+					}
+				} else if ( tree[ i ] == type[ i - 1 ][ 1 ] ){
+
 				}
 			}
-			//cout << basket[0] << ":" << count[0] << ", " << basket[1] << ":" << count[1] << endl;
+			size_t current_sum = count[ i ][ 0 ] + count[ i ][ 1 ];
+			if ( i > 0 ) {
+				most[ i ] = ( current_sum > most[ i - 1 ] ) ? current_sum : most[ i - 1 ];
+			} else {
+				most[ i ] = 1;
+			}
 		}
-
-		updateMost( count, most );
 
 		return most;
-	}
-protected:
-	static inline void updateMost(const array<int, 2> & count, int & most) {
-		int total = accumulate(count.begin(), count.end(), 0);
-		//cout << "total: " << total << endl;
-		if (total > most) {
-			most = total;
-			//cout << "most: " << most << endl;
-		}
-
 	}
 };
