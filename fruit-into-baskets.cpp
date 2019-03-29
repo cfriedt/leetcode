@@ -23,8 +23,6 @@
  */
 
 #include <vector>
-#include <numeric>
-#include <utility>
 
 using namespace std;
 
@@ -54,66 +52,127 @@ public:
 		// count[1] | 0 | 0 1 2 3 3 4 1 2 2
 		// most     | 0 | 1 2 3 4 5 6 6 6 6
 
-		vector<vector<int>> type( N + 1, vector<int>({-1,-1}) );
-		vector<vector<size_t>> last( N + 1, vector<size_t>({-1,-1}) );
-		vector<vector<size_t>> count( N + 1, vector<size_t>({0,0}) );
+		vector<vector<int>> type( 2, vector<int>( N + 1, -1 ) );
+		vector<vector<size_t>> last( 2, vector<size_t>( N + 1, size_t(-1) ) );
+		vector<vector<size_t>> count( 2, vector<size_t>( N + 1, 0 ) );
 		vector<size_t> most( N + 1, 0 );
 
 		for( size_t j = 1; j <= N; j++ ) {
+			const size_t i = j - 1;
+			size_t k;
 
-			size_t i = j - 1;
+			// N.B. only really works by using [ k ] / [ ! k ] because there are maximally 2 types of fruit
+			for( k = 0; k < 2; k++ ) {
 
-			if ( false ) {
-			} else if ( -1 == last[ i ][ 0 ] ) {
-				type[ i ][ 0 ] = tree[ i ];
-				last[ i ][ 0 ] = i;
-				count[ i ][ 0 ] = 1;
-				if ( i > 0 ) {
-					count[ i ][ 1 ] = count[ i - 1 ][ 1 ];
-				}
-			} else if ( -1 == last[ i ][ 1 ] ) {
-				type[ i ][ 1 ] = tree[ i ];
-				last[ i ][ 1 ] = i;
-				count[ i ][ 1 ] = 1;
-				if ( i > 0 ) {
-					count[ i ][ 0 ] = count[ i - 1 ][ 0 ];
-				}
-			} else if ( tree[ i ] == type[ i - 1 ][ 0 ] ) {
-				type[ i ][ 0 ] = type[ i - 1 ][ 0 ];
-				type[ i ][ 1 ] = type[ i - 1 ][ 1 ];
-				last[ i ][ 0 ] = i;
-				last[ i ][ 1 ] = last[ i - 1 ][ 1 ];
-				count[ i ][ 0 ] = count[ i - 1 ][ 0 ] + 1;
-				count[ i ][ 1 ] = count[ i - 1 ][ 1 ];
-			} else if ( tree[ i ] == type[ i - 1 ][ 1 ] ) {
-				type[ i ][ 1 ] = type[ i - 1 ][ 1 ];
-				type[ i ][ 0 ] = type[ i - 1 ][ 0 ];
-				last[ i ][ 1 ] = i;
-				last[ i ][ 0 ] = last[ i - 1 ][ 0 ];
-				count[ i ][ 1 ] = count[ i - 1 ][ 1 ] + 1;
-				count[ i ][ 0 ] = count[ i - 1 ][ 0 ];
-			} else {
-				if ( false ) {
-				} else if ( tree[ i ] == type[ i - 1 ][ 0 ] ) {
-					type[ i ][ 1 ] = tree[ i ];
-					type[ i ][ 0 ] = type[ i - 1 ][ 0 ];
-					last[ i ][ 1 ] = i;
-					last[ i ][ 0 ] = last[ i - 1 ][ 0 ];
-					if ( false ) {
-					} else if ( -1 == last[ ] ) {
-					}
-				} else if ( tree[ i ] == type[ i - 1 ][ 1 ] ){
+				if ( size_t(-1) == last[ k ][ i ] || type[ k ][ i ] == tree[ i ] ) {
 
+					// Either:
+					//
+					// zero unique tree types have been sampled (i.e. no trees have been sampled)
+					// , or we have already sampled tree i and it matches type[ i ][ 0 ]
+					//
+					// Or:
+					//
+					// this is only the 2nd unique tree type we have sampled,
+					// or we have already sampled tree i and it matches type[ i ][ 1 ]
+
+					type[  k ][ j ] = tree[ i ];
+					type[ !k ][ j ] = type[ !k ][ i ];
+					last[  k ][ j ] = i;
+					last[ !k ][ j ] = last[ !k ][ i ];
+					count[  k ][ j ] = count[  k ][ i ] + 1;
+					count[ !k ][ j ] = count[ !k ][ i ];
+
+					break;
 				}
+
 			}
-			size_t current_sum = count[ i ][ 0 ] + count[ i ][ 1 ];
-			if ( i > 0 ) {
-				most[ i ] = ( current_sum > most[ i - 1 ] ) ? current_sum : most[ i - 1 ];
+
+			if ( k >= 2 ) {
+
+				// In this case, the next tree we sample does not match type[ i ][ 0 ] or
+				// type[ i ][ 1 ]
+
+				// this is where it gets "interesting".
+				// Say we have the following 2 scenarios:
+				//
+				// Example A:
+				// i       | 0 1 2 3 4
+				// tree[i] | 0 0 1 1 2
+				//
+				// Example B:
+				// i       | 0 1 2 3 4
+				// tree[i] | 0 1 0 1 2
+				//
+				// Up until i == 4, we have had two types of fruit: type 0 and type 1.
+				//
+				// When we get to i == 4, we have must
+				//
+				// a) replace one of the types of fruit
+				// b) update the count of the type of fruit we did not replace
+				//
+				// For a), deciding which fruit to replace,
+				//    if tree[ i ] == type[ i ][ 0 ] then we discard type[ i ][ 1 ]
+				//    if tree[ i ] == type[ i ][ 1 ] then we discard type[ i ][ 0 ]
+				//
+				//    We'll call the index of the replaced type k again.
+				//
+				//    We replace the k fruit type with tree[ i ], so
+				//      => type[ j ][ k  ] = tree[ i ];
+				//      => type[ j ][ !k ] = type[ i ][ !k ];
+				//
+				//    This satisfies the requirement that 2 fruit types need to be
+				//    'contiguous'.
+				//
+				// For b), updating the count of the fruit we kept, it's a bit tricker
+				//
+				//     In both Example A, and Example B, by the time we get to i == 4,
+				//     count[i][0] == 2 and count[i][1] == 2, but after updating,
+				//     in Example A, count[ j ][ 1 ] == 2 and in Example B, count[ j ][ 1 ] == 1.
+				//
+				//     Why is that? Well, let's look at the last occurrence of fruit type
+				//     0 in both cases.
+				//
+				//     In Example A, the last occurrence of fruit type 0 is at i == 1, and
+				//     in Example B, the last occurrence of fruit type 1 is at i == 2.
+				//
+				//     If k is the fruit that is replaced, then we can say that
+				//     count[ j ][ !k ] = count[ i ][ !k ] - count[ last[ i ][ k ] ][ !k ];
+				//     OR
+				//     count[ j ][ !k ] = count[ last[ i ][ !k ] ][ !k ] - count[ last[ i ][ k ] ][ !k ];
+				//
+				//     Note, that we have already established last[ !k ] > last[ k ].
+				//
+				//     In plain language, if we keep track of the last occurrence for each
+				//     fruit type, AND the historical counts, then we can easily solve b).
+
+				if ( tree[ i ] == type[ 0 ][ i ] ) {
+					k = 1;
+				} else {
+					k = 0;
+				}
+
+				type[ k ][ j ] = tree[ i ];
+				type[ !k ][ j ] = type[ !k ][ i ];
+				last[ k ][ j ] = i;
+				last[ !k ][ j ] = last[ !k ][ i ];
+				size_t last_replaced = last[ k ][ i ];
+				size_t count_last_replaced = count[ !k ][ last_replaced ];
+				size_t count_last = count[ !k ][ i ];
+				//count[ !k ][ j ] = count[ !k ][ last[ !k ][ i ] ] - count[ !k ][ last[ k ][ i - 1 ] ];
+				count[ !k ][ j ] = count_last - count_last_replaced;
+				count[ k ][ j ] = 1;
+
+			}
+
+			size_t current_sum = count[ 0 ][ j ] + count[ 1 ][ j ];
+			if ( current_sum > most[ i ] ) {
+				most[ j ] = current_sum;
 			} else {
-				most[ i ] = 1;
+				most[ j ] = most[ i ];
 			}
 		}
 
-		return most;
+		return int( most.back() );
 	}
 };
