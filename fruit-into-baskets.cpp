@@ -53,7 +53,8 @@ public:
 		// most     | 0 | 1 2 3 4 5 6 6 6 6
 
 		vector<vector<int>> type( 2, vector<int>( N + 1, -1 ) );
-		vector<vector<size_t>> last( 2, vector<size_t>( N + 1, size_t(-1) ) );
+		vector<vector<size_t>> first( 2, vector<size_t>( N + 1, 0 ) );
+		vector<vector<size_t>> last( 2, vector<size_t>( N + 1, 0 ) );
 		vector<vector<size_t>> count( 2, vector<size_t>( N + 1, 0 ) );
 		vector<size_t> most( N + 1, 0 );
 
@@ -64,7 +65,7 @@ public:
 			// N.B. only really works by using [ k ] / [ ! k ] because there are maximally 2 types of fruit
 			for( k = 0; k < 2; k++ ) {
 
-				if ( size_t(-1) == last[ k ][ i ] || type[ k ][ i ] == tree[ i ] ) {
+				if ( 0 == count[ k ][ i ] || type[ k ][ i ] == tree[ i ] ) {
 
 					// Either:
 					//
@@ -78,6 +79,8 @@ public:
 
 					type[  k ][ j ] = tree[ i ];
 					type[ !k ][ j ] = type[ !k ][ i ];
+					first[  k ][ j ] = i;
+					first[ !k ][ j ] = first[ !k ][ i ];
 					last[  k ][ j ] = i;
 					last[ !k ][ j ] = last[ !k ][ i ];
 					count[  k ][ j ] = count[  k ][ i ] + 1;
@@ -146,21 +149,28 @@ public:
 				//     In plain language, if we keep track of the last occurrence for each
 				//     fruit type, AND the historical counts, then we can easily solve b).
 
-				if ( tree[ i ] == type[ 0 ][ i ] ) {
+				if ( tree[ i - 1 ] == type[ 0 ][ i - 1 ] ) {
 					k = 1;
 				} else {
 					k = 0;
 				}
 
-				type[ k ][ j ] = tree[ i ];
+				type[  k ][ j ] = tree[ i ];
 				type[ !k ][ j ] = type[ !k ][ i ];
-				last[ k ][ j ] = i;
+				first[  k ][ j ] = i;
+				first[ !k ][ j ] = first[ !k ][ i ];
+				last[  k ][ j ] = i;
 				last[ !k ][ j ] = last[ !k ][ i ];
-				size_t last_replaced = last[ k ][ i ];
-				size_t count_last_replaced = count[ !k ][ last_replaced ];
-				size_t count_last = count[ !k ][ i ];
-				//count[ !k ][ j ] = count[ !k ][ last[ !k ][ i ] ] - count[ !k ][ last[ k ][ i - 1 ] ];
-				count[ !k ][ j ] = count_last - count_last_replaced;
+
+				if ( first[ !k ][ i - 1 ] >= last[ k ][ i - 1 ] ) {
+					// there is no overlap in the intervals that fruit 0 and fruit 1 were collected
+					count[ !k ][ j ] = count[ !k ][ i ];
+				} else {
+					// there is an overlap in the intervals that fruit 0 and fruit 1 were collected
+					// we restart counting
+					size_t restart = max( first[ !k ][ i ], last[ k ][ i ] );
+					count[ !k ][ j ] = count[ !k ][ i ] - count[ !k ][ restart ];
+				}
 				count[ k ][ j ] = 1;
 
 			}
@@ -171,6 +181,9 @@ public:
 			} else {
 				most[ j ] = most[ i ];
 			}
+
+//			printf( "j: %d, type[0]: %2d, type[1]: %2d, first[0]: %2d, first[1]: %2d, last[0]: %2d, last[1]: %2d, count[0]: %d, count[1]: %d\n",
+//				int(j), type[0][j], type[1][j], int(first[0][j]), int(first[1][j]), int(last[0][j]), int(last[1][j]), int(count[0][j]), int(count[1][j]) );
 		}
 
 		return int( most.back() );
