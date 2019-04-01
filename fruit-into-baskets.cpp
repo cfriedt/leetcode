@@ -52,11 +52,11 @@ public:
 		// count[1] | 0 | 0 1 2 3 3 4 1 2 2
 		// most     | 0 | 1 2 3 4 5 6 6 6 6
 
-		vector<vector<int>> type( 2, vector<int>( N + 1, -1 ) );
-		vector<vector<size_t>> first( 2, vector<size_t>( N + 1, 0 ) );
-		vector<vector<size_t>> last( 2, vector<size_t>( N + 1, 0 ) );
+		vector<int> type( 2, -1 );
+		vector<size_t> first( 2, 0 );
+		vector<size_t> last( 2, 0 );
 		vector<vector<size_t>> count( 2, vector<size_t>( N + 1, 0 ) );
-		vector<size_t> most( N + 1, 0 );
+		size_t most = 0;
 
 		for( size_t j = 1; j <= N; j++ ) {
 			const size_t i = j - 1;
@@ -65,24 +65,23 @@ public:
 			// N.B. only really works by using [ k ] / [ ! k ] because there are maximally 2 types of fruit
 			for( k = 0; k < 2; k++ ) {
 
-				if ( 0 == count[ k ][ i ] || type[ k ][ i ] == tree[ i ] ) {
+				if ( 0 == count[ k ][ i ] || type[ k ] == tree[ i ] ) {
 
 					// Either:
 					//
-					// zero unique tree types have been sampled (i.e. no trees have been sampled)
-					// , or we have already sampled tree i and it matches type[ i ][ 0 ]
+					// zero unique tree types have been sampled (i.e. no trees have been sampled),
+					// or we have already sampled tree i and it matches type[ 0 ]
 					//
 					// Or:
 					//
 					// this is only the 2nd unique tree type we have sampled,
-					// or we have already sampled tree i and it matches type[ i ][ 1 ]
+					// or we have already sampled tree i and it matches type[ 1 ]
 
-					type[  k ][ j ] = tree[ i ];
-					type[ !k ][ j ] = type[ !k ][ i ];
-					first[  k ][ j ] = i;
-					first[ !k ][ j ] = first[ !k ][ i ];
-					last[  k ][ j ] = i;
-					last[ !k ][ j ] = last[ !k ][ i ];
+					type[  k ] = tree[ i ];
+					if ( 0 == count[ k ][ i ] ) {
+						first[ k ] = i;
+					}
+					last[ k ] = i;
 					count[  k ][ j ] = count[  k ][ i ] + 1;
 					count[ !k ][ j ] = count[ !k ][ i ];
 
@@ -149,43 +148,43 @@ public:
 				//     In plain language, if we keep track of the last occurrence for each
 				//     fruit type, AND the historical counts, then we can easily solve b).
 
-				if ( tree[ i - 1 ] == type[ 0 ][ i - 1 ] ) {
+				if ( tree[ i - 1 ] == type[ 0 ] ) {
 					k = 1;
 				} else {
 					k = 0;
 				}
 
-				type[  k ][ j ] = tree[ i ];
-				type[ !k ][ j ] = type[ !k ][ i ];
-				first[  k ][ j ] = i;
-				first[ !k ][ j ] = first[ !k ][ i ];
-				last[  k ][ j ] = i;
-				last[ !k ][ j ] = last[ !k ][ i ];
+				last[ !k ]++;
+				type[  k ] = tree[ i ];
 
-				if ( first[ !k ][ i - 1 ] >= last[ k ][ i - 1 ] ) {
+				if ( first[ !k ] >= last[ k ] ) {
 					// there is no overlap in the intervals that fruit 0 and fruit 1 were collected
 					count[ !k ][ j ] = count[ !k ][ i ];
+
+					first[  k ] = i;
+					last[  k ] = i;
 				} else {
 					// there is an overlap in the intervals that fruit 0 and fruit 1 were collected
 					// we restart counting
-					size_t restart = max( first[ !k ][ i ], last[ k ][ i ] );
+					size_t restart = max( first[ !k ], last[ k ] );
 					count[ !k ][ j ] = count[ !k ][ i ] - count[ !k ][ restart ];
+
+					first[  k ] = i;
+					last[  k ] = i;
 				}
 				count[ k ][ j ] = 1;
 
 			}
 
 			size_t current_sum = count[ 0 ][ j ] + count[ 1 ][ j ];
-			if ( current_sum > most[ i ] ) {
-				most[ j ] = current_sum;
-			} else {
-				most[ j ] = most[ i ];
-			}
+			if ( current_sum > most ) {
+				most = current_sum;
+		}
 
 //			printf( "j: %d, type[0]: %2d, type[1]: %2d, first[0]: %2d, first[1]: %2d, last[0]: %2d, last[1]: %2d, count[0]: %d, count[1]: %d\n",
 //				int(j), type[0][j], type[1][j], int(first[0][j]), int(first[1][j]), int(last[0][j]), int(last[1][j]), int(count[0][j]), int(count[1][j]) );
 		}
 
-		return int( most.back() );
+		return int( most );
 	}
 };
