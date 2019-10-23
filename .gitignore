@@ -1,0 +1,7 @@
+*.clangtidy
+*.gcda
+*.gcno
+*-test
+*.gcov
+.*project
+.settings/
