@@ -54,6 +54,13 @@ TEST_F( OptimalDivision, Test_5_4_3_2_6 ) {
     EXPECT_EQ(actual_string, expected_string);
 }
 
+TEST_F( OptimalDivision, Test_5_2_9_4_7_3_10_8_8_2 ) {
+    vector<int> nums = { 5,2,9,4,7,3,10,8,8,2 };
+    string expected_string( "5/(2/9/4/7/3/10/8/8/2)" );
+    string actual_string = optimalDivision(nums);
+    EXPECT_EQ(actual_string, expected_string);
+}
+
 TEST_F( OptimalDivision, Test_eval ) {
 
     // 1 => 1

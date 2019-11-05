@@ -36,9 +36,9 @@ class Solution {
 protected:
 
     enum {
-        LPAREN = '(',
-        RPAREN = ')',
-        NPAREN = '_',
+        LPAREN = INT_MIN,
+        RPAREN = INT_MAX,
+        NPAREN = INT_MIN+1,
     };
 
 public:
@@ -113,14 +113,14 @@ public:
         // * The recursive solution is at least O( N 2^(2N) ) => O( N k^N ) which is absolutely horrible.
         // * Likely, there is a DP way to build-up toward the optimal solution in one pass.
 
-        helper( nums, "", nums.size(), 0, optimal_result, optimal_expression );
+        helper( nums, vector<int>(), nums.size(), 0, optimal_result, optimal_expression );
 
         return optimal_expression;
     }
 
 protected:
 
-    void helper( const vector<int> & nums, const string decorator, size_t lparen, size_t score, float & optimal_result, string & optimal_expression) {
+    void helper( const vector<int> & nums, const vector<int> decorator, size_t lparen, size_t score, float & optimal_result, string & optimal_expression) {
         const size_t N = nums.size();
         const size_t M = 2 * N;
         size_t j = decorator.size();
@@ -128,9 +128,6 @@ protected:
         if ( j == M ) {
             if ( 0 == score ) {
 
-                if ( "__()__" == decorator ) {
-                    cout << "";
-                }
                 string expression = stringify( nums, decorator );
                 float result = eval( nums, decorator );
 
@@ -157,14 +154,14 @@ protected:
         }
 
         // append '_'
-        string de3 = decorator;
+        vector<int> de3 = decorator;
         de3.push_back( NPAREN );
         helper( nums, de3, lparen, score, optimal_result, optimal_expression );
 
         if ( false ) {
         } else if ( lparen > 0 && 0 == ( j % 2 ) ) {
             // append '('
-            string de1 = decorator;
+            vector<int> de1 = decorator;
             de1.push_back( LPAREN );
             helper( nums, de1, lparen - 1, score + 1, optimal_result, optimal_expression );
         } else if ( score > 0 && 1 == ( j % 2 ) ) {
@@ -173,7 +170,7 @@ protected:
 //                return;
 //            }
             // append ')'
-            string de2 = decorator;
+            vector<int> de2 = decorator;
             de2.push_back( RPAREN );
             helper( nums, de2, lparen, score - 1, optimal_result, optimal_expression );
         }
@@ -303,7 +300,7 @@ protected:
         return quotient;
     }
 
-    static float eval( const vector<int> & nums, const string & decorator ) {
+    static float eval( const vector<int> & nums, const vector<int> & decorator ) {
         if ( decorator.size() != 2 * nums.size() ) {
             throw invalid_argument( "nums.size() (" + to_string( nums.size() ) + ") != 2 * decorators.size() (" + to_string( decorator.size() ) + ")" );
         }
@@ -321,7 +318,7 @@ protected:
         return eval( expression );
     }
 
-    static string stringify( const vector<int> & nums, const string & decorator ) {
+    static string stringify( const vector<int> & nums, const vector<int> & decorator ) {
         if ( decorator.size() != 2 * nums.size() ) {
             throw invalid_argument( "nums.size() (" + to_string( nums.size() ) + ") != 2 * decorators.size() (" + to_string( decorator.size() ) + ")" );
         }
