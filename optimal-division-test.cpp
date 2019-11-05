@@ -83,100 +83,81 @@ TEST_F( OptimalDivision, Test_eval ) {
 
     // An expression of length one is evaluated as the float version of itself.
 
-    vector<int> expression;
     float expected_float;
     float actual_float;
 
-    expression = vector<int>();
     expected_float = 0;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ 1 });
     expected_float = 1;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("1");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ Solution::LPAREN, 1, Solution::RPAREN });
     expected_float = 1;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("(1)");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ 1, 2 });
     expected_float = 0.5;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("1/2");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ Solution::LPAREN, 1, Solution::RPAREN, 2 });
     expected_float = 0.5;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("(1)/2");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ 1, Solution::LPAREN, 2, Solution::RPAREN });
     expected_float = 0.5;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("1/(2)");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ Solution::LPAREN, 1, Solution::RPAREN, Solution::LPAREN, 2, Solution::RPAREN });
     expected_float = 0.5;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("(1)/(2)");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ Solution::LPAREN, Solution::LPAREN, 1, Solution::RPAREN, Solution::LPAREN, 2, Solution::RPAREN, Solution::RPAREN });
     expected_float = 0.5;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("((1)/(2))");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ Solution::LPAREN, 1, 2, Solution::RPAREN });
     expected_float = 0.5;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("(1/2)");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ 3, Solution::LPAREN, 1, 2, Solution::RPAREN });
     expected_float = 6;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("3/(1/2)");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ Solution::LPAREN, 1, 2, Solution::RPAREN, 3 });
     expected_float = 0.16666666666666666;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("(1/2)/3");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ 3, Solution::LPAREN, Solution::LPAREN, 1, Solution::RPAREN, Solution::LPAREN, 2, Solution::RPAREN, Solution::RPAREN });
     expected_float = 6;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("3/((1)/(2))");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    expression = vector<int>({ Solution::LPAREN, Solution::LPAREN, 1, Solution::RPAREN, Solution::LPAREN, 2, Solution::RPAREN, Solution::RPAREN, 3 });
     expected_float = 0.16666666666666666;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("((1)/(2))/3");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    // 2/(3/4) => 2.66666666666666666666
-    expression = vector<int>({ 2, Solution::LPAREN, 3, 4, Solution::RPAREN });
     expected_float = 2.66666666666666666666;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("2/(3/4)");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
-    // 2/3/4 => 1.66666666666666666667
-    expression = vector<int>({ 2, 3, 4, });
     expected_float = 0.166666666666666666667;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("2/3/4");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
     // 5/(4/3/2/6)
-    expression = vector<int>({ 5, Solution::LPAREN, 4, 3, 2, 6, Solution::RPAREN, });
     expected_float = 45;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("5/(4/3/2/6)");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 
     // (4/3/2/6)
-    expression = vector<int>({ Solution::LPAREN, 4, 3, 2, 6, Solution::RPAREN, });
     expected_float = 1.0f/9.0f;
-    actual_float = Solution::eval(expression);
+    actual_float = Solution::eval("(4/3/2/6)");
     EXPECT_FLOAT_EQ( actual_float, expected_float );
 }
 
+#if 0
 TEST_F( OptimalDivision, Test_getExpr_4_3_2_6 ) {
     // 4/3/2/6
     const size_t offset = 1;
@@ -185,3 +166,4 @@ TEST_F( OptimalDivision, Test_getExpr_4_3_2_6 ) {
     vector<int> actual_expression = Solution::getExpr( input, offset );
     EXPECT_EQ( actual_expression, expected_expression );
 }
+#endif
