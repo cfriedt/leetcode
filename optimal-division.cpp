@@ -36,9 +36,9 @@ class Solution {
 protected:
 
     enum {
-        LPAREN = INT_MIN,
-        RPAREN = INT_MAX,
-        NPAREN = INT_MIN+1,
+        LPAREN = '(',
+        RPAREN = ')',
+        NPAREN = '_',
     };
 
 public:
@@ -97,15 +97,11 @@ public:
 
         // _ 1000 _ / _ 100 _ / _ 10 _ / _ 2 _
         // * the underscores indicate an area where a parenthesis can be
-        // * if the underscore is first, if it is not last, and
-        //   if there is a number to the right of it, then a ( can go there
-        // * if the underscore is not first, if it is last, or
-        //   if there is a number to the left of it, then a ) can go there
-        // * If there are N numbers, then there are 2N underscores
-        // * Each underscore may take on 3 possible values
-        // * Therefore, there are 3^(2N) possible ways to permute the
-        //   underscores
-        // * Only a subset of those 3^(2N) possible ways are valid
+        // * if there is a number to the right of '_' (and if the '_' is not last), then a '(' can go there, or not
+        // * if there is a number to the left of '_' (and if the '_' is not first), then a ')' can go there, or not        // * If there are N numbers, then there are 2N underscores
+        // * Each underscore may take on 2 possible values
+        // * Therefore, there are 2^(2N) possible ways to permute the underscores
+        // * Only a subset of those 2^(2N) possible ways are valid
         // * Say we can only put the values +1, 0, and -1 where the the
         //   underscores are, and the sum of those numbers must equal 0.
         // * It's possible to short-circuit and quit early if there is
@@ -114,30 +110,31 @@ public:
         //   you evaluate terms either, which makes it a bit more difficult
         // * The sum must always be >= 0
         // * A recursive solution follows directly
-        // * The recursive solution is at least O( N 3^(2N) ) => O( N k^N )
-        //   which is absolutely horrible.
-        // * Likely, there is a DP way to build-up toward the optimal solution
-        //   in one pass.
+        // * The recursive solution is at least O( N 2^(2N) ) => O( N k^N ) which is absolutely horrible.
+        // * Likely, there is a DP way to build-up toward the optimal solution in one pass.
 
-        helper( nums, vector<int>(), nums.size() / 2, 0, optimal_result, optimal_expression );
+        helper( nums, "", nums.size(), 0, optimal_result, optimal_expression );
 
         return optimal_expression;
     }
 
 protected:
 
-    void helper( const vector<int> & nums, vector<int> decorator, size_t lparen, size_t score, float & optimal_result, string & optimal_expression) {
+    void helper( const vector<int> & nums, const string decorator, size_t lparen, size_t score, float & optimal_result, string & optimal_expression) {
         const size_t N = nums.size();
         const size_t M = 2 * N;
         size_t j = decorator.size();
 
-        if ( decorator.size() == M ) {
+        if ( j == M ) {
             if ( 0 == score ) {
 
+                if ( "__()__" == decorator ) {
+                    cout << "";
+                }
                 string expression = stringify( nums, decorator );
                 float result = eval( nums, decorator );
 
-                cerr << "expression: " << expression << " result: " << result;
+                //cerr << "expression: " << expression << " result: " << result;
                 bool supercede = false;
 
                 if ( result > optimal_result ) {
@@ -151,36 +148,70 @@ protected:
                 if ( supercede ) {
                         optimal_result = result;
                         optimal_expression = expression;
-                        cerr << " (optimal)" << endl;
+                        //cerr << " (optimal)" << endl;
                 } else {
-                    cerr << endl;
+                    //cerr << endl;
                 }
             }
             return;
         }
 
-        // append '('
-        if ( lparen && ( 0 == j || 0 == ( j % 2 ) ) ) {
-            vector<int> de1 = decorator;
+        // append '_'
+        string de3 = decorator;
+        de3.push_back( NPAREN );
+        helper( nums, de3, lparen, score, optimal_result, optimal_expression );
+
+        if ( false ) {
+        } else if ( lparen > 0 && 0 == ( j % 2 ) ) {
+            // append '('
+            string de1 = decorator;
             de1.push_back( LPAREN );
             helper( nums, de1, lparen - 1, score + 1, optimal_result, optimal_expression );
+        } else if ( score > 0 && 1 == ( j % 2 ) ) {
+//            if ( j > 0 && LPAREN == decorator[ j - 1 ] ) {
+//                // we do not want e.g. (2) because the parenthesis are redundant
+//                return;
+//            }
+            // append ')'
+            string de2 = decorator;
+            de2.push_back( RPAREN );
+            helper( nums, de2, lparen, score - 1, optimal_result, optimal_expression );
+        }
+    }
+
+    static vector<int> getExpr( const vector<int> & expression, const size_t & offset ) {
+
+        vector<int> r;
+
+        if ( offset >= expression.size() ) {
+            return r;
         }
 
-        // append '_'
-        vector<int> de2 = decorator;
-        de2.push_back( NPAREN );
-        helper( nums, de2, lparen, score, optimal_result, optimal_expression );
-
-        // append ')'
-        if ( score && ( M - 1 == j || 1 == ( j % 2 ) ) ) {
-            if ( j > 0 && LPAREN == decorator[ j - 1 ] ) {
-                // we do not want e.g. (2) because the parenthesis are redundant
-                return;
+        size_t len = 0;
+        if ( LPAREN == expression[ offset ] ) {
+            // we are looking for the first RPAREN that settles the score
+            for( size_t j = offset + 1, score = 1; j < expression.size(); j++ ) {
+                if ( LPAREN == expression[ j ] ) {
+                    score++;
+                } else if ( RPAREN == expression[ j ] ) {
+                    score--;
+                    if ( 0 == score ) {
+                        len = j - offset + 1;
+                        break;
+                    }
+                }
             }
-            vector<int> de3 = decorator;
-            de3.push_back( RPAREN );
-            helper( nums, de3, lparen, score - 1, optimal_result, optimal_expression );
+        } else {
+            len = 1;
+            // we are looking for the first LPAREN
+            for( size_t j = offset + 1; j < expression.size(); j++, len++ ) {
+                if ( LPAREN == expression[ j ] ) {
+                    break;
+                }
+            }
         }
+        r = vector<int>( expression.begin() + offset, expression.begin() + offset + len );
+        return r;
     }
 
     static float eval( const vector<int> & expression ) {
@@ -192,22 +223,10 @@ protected:
         vector<int> dividendExpr;
         vector<int> rest;
 
-        auto getExpr = [&]( size_t offset ) -> vector<int> {
-            if ( LPAREN != expression[ offset ] ) {
-                return vector<int>({ expression[ offset ] });
-            }
-            size_t count;
-            size_t j;
-            for( j = offset + 1, count = 1; j < expression.size() && 0 != count; j++ ) {
-                switch( expression[ j ] ) {
-                case LPAREN: count++; break;
-                case RPAREN: count--; break;
-                }
-            }
-            return vector<int>( expression.begin() + offset, expression.begin() + j );
-        };
-
-        //cerr << "evaluating " << stringify( expression ) << endl;
+#if 0
+        stringstream ss;
+        ss << stringify( expression );
+#endif
 
         if ( 0 == expression.size() ) {
             return 0;
@@ -241,20 +260,28 @@ protected:
 
             default:
 
-                divisorExpr = getExpr( 0 );
+                divisorExpr = getExpr( expression, 0 );
 
                 if ( divisorExpr.size() == expression.size() ) {
-                    divisorExpr = vector<int>( expression.begin() + 1, expression.end() - 1 );
-                    dividend = 1.0f;
-                    rest.clear();
+                    if ( LPAREN == expression[ 0 ] ) {
+                        // ( expr )
+                        divisorExpr = vector<int>( expression.begin() + 1, expression.end() - 1 );
+                        dividend = 1.0f;
+                        rest.clear();
+                    } else {
+                        // a / b / c / d / ... / z
+                        divisorExpr =  vector<int>( expression.begin(), expression.end() - 1 );
+                        dividendExpr = vector<int>({ expression.back() });
+                        dividend = eval( dividendExpr );
+                    }
                 } else {
-                    dividendExpr = getExpr( divisorExpr.size() );
+                    dividendExpr = getExpr( expression, divisorExpr.size() );
                     dividend = eval( dividendExpr );
 
                     if ( expression.size() == divisorExpr.size() + dividendExpr.size() ) {
                         rest.clear();
                     } else {
-                        rest = getExpr( divisorExpr.size() + dividendExpr.size() );
+                        rest = getExpr( expression, divisorExpr.size() + dividendExpr.size() );
                     }
                 }
                 divisor = eval( divisorExpr );
@@ -268,39 +295,44 @@ protected:
             quotient = divisor / dividend / eval( rest );
         }
 
+#if 0
+        ss << " = " << quotient;
+        cerr << ss.str() << endl;
+#endif
+
         return quotient;
     }
 
-    static float eval( const vector<int> & nums, vector<int> decorators ) {
-        if ( decorators.size() != 2 * nums.size() ) {
-            throw invalid_argument( "nums.size() (" + to_string( nums.size() ) + ") != 2 * decorators.size() (" + to_string( decorators.size() ) + ")" );
+    static float eval( const vector<int> & nums, const string & decorator ) {
+        if ( decorator.size() != 2 * nums.size() ) {
+            throw invalid_argument( "nums.size() (" + to_string( nums.size() ) + ") != 2 * decorators.size() (" + to_string( decorator.size() ) + ")" );
         }
         vector<int> expression;
-        for( size_t j = 0; j < decorators.size(); j += 2 ) {
+        for( size_t j = 0; j < decorator.size(); j += 2 ) {
             size_t i = j / 2;
-            if ( LPAREN == decorators[ j ] ) {
+            if ( LPAREN == decorator[ j ] ) {
                 expression.push_back( LPAREN );
             }
             expression.push_back( nums[ i ] );
-            if ( RPAREN == decorators[ j + 1 ] ) {
+            if ( RPAREN == decorator[ j + 1 ] ) {
                 expression.push_back( RPAREN );
             }
         }
         return eval( expression );
     }
 
-    static string stringify( const vector<int> & nums, const vector<int> & decorators ) {
-        if ( decorators.size() != 2 * nums.size() ) {
-            throw invalid_argument( "nums.size() (" + to_string( nums.size() ) + ") != 2 * decorators.size() (" + to_string( decorators.size() ) + ")" );
+    static string stringify( const vector<int> & nums, const string & decorator ) {
+        if ( decorator.size() != 2 * nums.size() ) {
+            throw invalid_argument( "nums.size() (" + to_string( nums.size() ) + ") != 2 * decorators.size() (" + to_string( decorator.size() ) + ")" );
         }
         vector<int> expression;
-        for( size_t j = 0; j < decorators.size(); j += 2 ) {
+        for( size_t j = 0; j < decorator.size(); j += 2 ) {
             size_t i = j / 2;
-            if ( LPAREN == decorators[ j ] ) {
+            if ( LPAREN == decorator[ j ] ) {
                 expression.push_back( LPAREN );
             }
             expression.push_back( nums[ i ] );
-            if ( RPAREN == decorators[ j + 1 ] ) {
+            if ( RPAREN == decorator[ j + 1 ] ) {
                 expression.push_back( RPAREN );
             }
         }
@@ -308,22 +340,23 @@ protected:
     }
 
     static string stringify( const vector<int> & expression ) {
-        stringstream ss;
+        string s;
         for( size_t i = 0; i < expression.size(); i++ ) {
             const int & e = expression[ i ];
-            if ( LPAREN == e ) {
-                ss << "(";
-                continue;
+            switch( e ) {
+            case LPAREN: s += "("; break;
+            case RPAREN: s += ")"; break;
+            default: s += to_string( e ); break;
             }
-            if ( RPAREN == e ) {
-                ss << ")";
-                continue;
-            }
-            ss << e;
-            if ( i < expression.size() - 1 && RPAREN != expression[ i + 1 ] ) {
-                ss << "/";
+            if (
+                true
+                && i < expression.size() - 1
+                && LPAREN != expression[ i ]
+                && RPAREN != expression[ i + 1 ]
+             ) {
+                s += "/";
             }
         }
-        return ss.str();
+        return s;
     }
 };

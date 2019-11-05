@@ -33,13 +33,13 @@ public:
     OptimalDivision() : Solution() {}
 };
 
+
 TEST_F( OptimalDivision, Test_2_3_4 ) {
     vector<int> nums = { 2, 3, 4 };
     string expected_string( "2/(3/4)" );
     string actual_string = optimalDivision(nums);
     EXPECT_EQ(actual_string, expected_string);
 }
-
 TEST_F( OptimalDivision, Test_1000_100_10_2 ) {
     vector<int> nums = { 1000, 100, 10, 2 };
     string expected_string( "1000/(100/10/2)" );
@@ -156,4 +156,25 @@ TEST_F( OptimalDivision, Test_eval ) {
     expected_float = 0.166666666666666666667;
     actual_float = Solution::eval(expression);
     EXPECT_FLOAT_EQ( actual_float, expected_float );
+
+    // 5/(4/3/2/6)
+    expression = vector<int>({ 5, Solution::LPAREN, 4, 3, 2, 6, Solution::RPAREN, });
+    expected_float = 45;
+    actual_float = Solution::eval(expression);
+    EXPECT_FLOAT_EQ( actual_float, expected_float );
+
+    // (4/3/2/6)
+    expression = vector<int>({ Solution::LPAREN, 4, 3, 2, 6, Solution::RPAREN, });
+    expected_float = 1.0f/9.0f;
+    actual_float = Solution::eval(expression);
+    EXPECT_FLOAT_EQ( actual_float, expected_float );
+}
+
+TEST_F( OptimalDivision, Test_getExpr_4_3_2_6 ) {
+    // 4/3/2/6
+    const size_t offset = 1;
+    const vector<int> input({ 4, 3, 2, 6 });
+    vector<int> expected_expression( input.begin() + offset, input.end() );
+    vector<int> actual_expression = Solution::getExpr( input, offset );
+    EXPECT_EQ( actual_expression, expected_expression );
 }
