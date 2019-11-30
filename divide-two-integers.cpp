@@ -38,6 +38,14 @@ public:
             return 0;
         }
 
+	if ( 0 == divisor ) {
+		if ( dividend > 0 ) {
+			return INT_MAX;
+		} else {
+			return INT_MIN;
+		}
+	}
+
         if ( 1 == divisor ) {
             return dividend;
         }

@@ -81,7 +81,7 @@ public:
 
 		vector<vector<int>> r;
 
-		constexpr size_t min_row_to_use_symmetry_copy = SIZE_MAX;
+		//constexpr size_t min_row_to_use_symmetry_copy = SIZE_MAX;
 
 		for( size_t row = 0; (int)row < numRows; row++ ) {
 
@@ -93,6 +93,7 @@ public:
 
 				if ( 0 == row ) {
 					sum = 1;
+#if 0
 				} else if ( row >= min_row_to_use_symmetry_copy ) {
 					// shortcut due to symmetry:
 					// reverse and copy half of the row to the other side
@@ -119,6 +120,7 @@ public:
 					reverse( & r[ row ][ M ], & r[ row ][ row ] );
 
 					break;
+#endif
 				}
 
 				if ( i > 0 ) {
