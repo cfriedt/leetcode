@@ -52,7 +52,7 @@ public:
 
         const int N = seats.size();
         int maxDist = 0;
-        bool moveR;
+        bool moveR = true;
 
         for( int L = 0, R = 0;; ) {
 

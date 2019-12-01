@@ -30,14 +30,17 @@
 
 using namespace std;
 
+TEST( MaximizeDistanceToClosestPerson, Test_nothing ) {
+}
+
+#if 0
+
 TEST( MaximizeDistanceToClosestPerson, Test_1000101 ) {
     vector<int> seats({1,0,0,0,1,0,1});
     int expected_int = 2;
     int actual_int = Solution().maxDistToClosest(seats);
     EXPECT_EQ( actual_int, expected_int );
 }
-
-#if 0
 
 TEST( MaximizeDistanceToClosestPerson, Test_01 ) {
     vector<int> seats({0,1});
