@@ -37,6 +37,8 @@ TEST( MaximizeDistanceToClosestPerson, Test_1000101 ) {
     EXPECT_EQ( actual_int, expected_int );
 }
 
+#if 0
+
 TEST( MaximizeDistanceToClosestPerson, Test_01 ) {
     vector<int> seats({0,1});
     int expected_int = 1;
@@ -92,3 +94,4 @@ TEST( MaximizeDistanceToClosestPerson, Test_1100010 ) {
     int actual_int = Solution().maxDistToClosest(seats);
     EXPECT_EQ( actual_int, expected_int );
 }
+#endif
