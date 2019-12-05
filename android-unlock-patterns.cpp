@@ -125,7 +125,7 @@ protected:
         case 2:
         case 6:
         case 8:
-            for( const int & n: array<int,5>{ 1, 3, 4, 5, 7 } ) {
+            for( const int & n: array<int,5>{{ 1, 3, 4, 5, 7 }} ) {
                 if( ! visited[ n ] ) {
                     helper( min_length, max_length, n, accumulator, path, visited );
                 }
@@ -133,7 +133,7 @@ protected:
             break;
         case 1:
         case 7:
-            for( const int & n: array<int,7>{ 0, 2, 3, 4, 5, 6, 8 } ) {
+            for( const int & n: array<int,7>{{ 0, 2, 3, 4, 5, 6, 8 }} ) {
                 if( ! visited[ n ] ) {
                     helper( min_length, max_length, n, accumulator, path, visited );
                 }
@@ -141,14 +141,14 @@ protected:
             break;
         case 3:
         case 5:
-            for( const int & n: array<int,7>{ 0, 1, 2, 4, 6, 7, 8 } ) {
+            for( const int & n: array<int,7>{{ 0, 1, 2, 4, 6, 7, 8 }} ) {
                 if( ! visited[ n ] ) {
                     helper( min_length, max_length, n, accumulator, path, visited );
                 }
             }
             break;
         case 4:
-            for( const int & n: array<int,8>{ 0, 1, 2, 3, 5, 6, 7, 8 } ) {
+            for( const int & n: array<int,8>{{ 0, 1, 2, 3, 5, 6, 7, 8 }} ) {
                 if( ! visited[ n ] ) {
                     helper( min_length, max_length, n, accumulator, path, visited );
                 }
