@@ -55,5 +55,4 @@ protected:
     }
 };
 
-const array<int, 16> Solution::lut = array<int, 16> (
-    { 0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, });
+const array<int, 16> Solution::lut = array<int, 16> {{ 0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, }};

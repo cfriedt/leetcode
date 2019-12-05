@@ -258,22 +258,22 @@ protected:
 	}
 
 	static inline char dirToChar( int dir ) {
-		static const array<char,NDIR> lut({
+		static const array<char,NDIR> lut{{
 			'u',
 			'r',
 			'd',
 			'l',
-		});
+		}};
 		return lut[ dir ];
 	}
 	static inline int oppositeDir( int dir ) {
-		static const array<int,NDIR+1> lut({
+		static const array<int,NDIR+1> lut{{
 			DOWN,
 			LEFT,
 			UP,
 			RIGHT,
 			-1,
-		});
+		}};
 		int r = lut[ dir ];
 		if ( -1 == r ) {
 			r++;
