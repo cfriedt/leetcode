@@ -22,8 +22,8 @@
 
 .PHONY: all clean check gtest gcov clangtidy
 
-#CXX ?= $(CROSS_COMPILE)g++
-CXX := clang++
+CXX ?= $(CROSS_COMPILE)g++
+#CXX := clang++
 
 CPPFLAGS :=
 CXXFLAGS :=
