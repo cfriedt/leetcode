@@ -231,13 +231,13 @@ protected:
 	}
 
 	static inline int oppositeDir( int dir ) {
-		static const array<int,NDIR+1> lut({
+		static const array<int,NDIR+1> lut{{
 			DOWN,
 			LEFT,
 			UP,
 			RIGHT,
 			-1,
-		});
+		}};
 		int r = lut[ dir ];
 		return r;
 	}

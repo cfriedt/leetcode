@@ -22,8 +22,8 @@
 
 .PHONY: all clean check gtest gcov clangtidy
 
-CXX ?= $(CROSS_COMPILE)g++
-#CXX := clang++
+#CXX ?= $(CROSS_COMPILE)g++
+CXX := clang++
 
 CPPFLAGS :=
 CXXFLAGS :=
@@ -33,7 +33,7 @@ GCOVFLAGS :=
 GCOVRFLAGS :=
 CTIDYFLAGS :=
 
-CXXFLAGS += -Wall -Werror -Wextra -g -O0 -std=c++11
+CXXFLAGS += -Wall -Werror -Wextra -g -O0 -std=c++14
 
 # gcov
 CXXFLAGS += -fprofile-arcs -ftest-coverage
