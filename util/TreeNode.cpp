@@ -216,7 +216,7 @@ static void TreeNode_to_TreeIR( const size_t D, const size_t P, const size_t C, 
 			ir[ row ] = vector<TreeNode *>();
 		}
 		if ( col >= ir[ row ].size() ) {
-			ir[ row ].resize( col + 1 );
+			ir[ row ].resize( 1 << row );
 		}
 		ir[ row ][ col ] = node;
 
@@ -232,6 +232,11 @@ static void TreeNode_to_TreeIR( const size_t D, const size_t P, const size_t C, 
 //		}
 
 		TreeNode_to_TreeIR( D + 1, col, 1, node->right, ir, cache );
+
+		// remove trailing null's
+		for( ; nullptr == ir[ ir.size() - 1 ].back() ; ) {
+			ir[ ir.size() - 1 ].pop_back();
+		}
 }
 
 static TreeNode *TreeIR_to_TreeNode( TreeIR & ir ) {
