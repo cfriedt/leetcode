@@ -163,6 +163,14 @@ TEST( NumberOfIslands, Test_empty ) {
     EXPECT_EQ( actual_int, expected_int );
 }
 
+TEST( NumberOfIslands, Test_noColumns ) {
+    vector<vector<char>> grid( 500, vector<char>() );
+    fixup( grid );
+	int expected_int = 0;
+    int actual_int = Solution().numIslands(grid);
+    EXPECT_EQ( actual_int, expected_int );
+}
+
 TEST( NumberOfIslands, Test_vzigzag ) {
     vector<vector<char>> grid {
         { '1', '1', '1', '1', '1' },
