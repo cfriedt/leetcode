@@ -22,14 +22,82 @@
  * SOFTWARE.
  */
 
+#include <vector>
+
 #include <gtest/gtest.h>
 
 #include "car-fleet.cpp"
+
+using namespace std;
 
 TEST( CarFleet, Test_12__10_8_0_5_3__2_4_1_1_3 ) {
 	int target = 12;
 	vector<int> position{10,8,0,5,3};
 	vector<int> speed{2,4,1,1,3};
+	int expected_int = 3;
 	int actual_int = Solution().carFleet(target, position, speed);
 	EXPECT_EQ( actual_int, expected_int );
+}
+
+TEST( CarFleet, Test_10__empty__empty__noCars ) {
+    int target = 10;
+    vector<int> position;
+    vector<int> speed;
+    int expected_int = 0;
+    int actual_int = Solution().carFleet(target, position, speed);
+    EXPECT_EQ( actual_int, expected_int );
+}
+
+TEST( CarFleet, Test_10__0_1__oneCar ) {
+    int target = 10;
+    vector<int> position;
+    vector<int> speed;
+    int expected_int = 1;
+    int actual_int = Solution().carFleet(target, position, speed);
+    EXPECT_EQ( actual_int, expected_int );
+}
+
+TEST( CarFleet, Test_10__1_1_1_1_1__1_2_3_4_5__multipleCarsSameStartingPositionDifferentSpeeds ) {
+    int target = 10;
+    vector<int> position{1,1,1,1,1};
+    vector<int> speed{1,2,3,4,5};
+    int expected_int = 1;
+    int actual_int = Solution().carFleet(target, position, speed);
+    EXPECT_EQ( actual_int, expected_int );
+}
+
+TEST( CarFleet, Test_10__1_1_1_1_1__5_5_5_5_5__multipleCarsSameStartingPositionSameSpeeds ) {
+    int target = 10;
+    vector<int> position{1,1,1,1,1};
+    vector<int> speed{1,2,3,4,5};
+    int expected_int = 1;
+    int actual_int = Solution().carFleet(target, position, speed);
+    EXPECT_EQ( actual_int, expected_int );
+}
+
+TEST( CarFleet, Test_10__1_2_3_4_5__1_1_1_1_1__sameVelocity ) {
+    int target = 10;
+    vector<int> position{1,2,3,4,5};
+    vector<int> speed{1,1,1,1,1};
+    int expected_int = 5;
+    int actual_int = Solution().carFleet(target, position, speed);
+    EXPECT_EQ( actual_int, expected_int );
+}
+
+TEST( CarFleet, Test_10__1_2_3_4_5__5_4_3_2_1__multipleCarsDecreasingSpeeds ) {
+    int target = 10;
+    vector<int> position{1,2,3,4,5};
+    vector<int> speed{5,4,3,2,1};
+    int expected_int = 1;
+    int actual_int = Solution().carFleet(target, position, speed);
+    EXPECT_EQ( actual_int, expected_int );
+}
+
+TEST( CarFleet, Test_10__1_2_3_4_5__1_2_3_4_5__multipleCarsIncreasingSpeeds ) {
+    int target = 10;
+    vector<int> position{1,2,3,4,5};
+    vector<int> speed{5,4,3,2,1};
+    int expected_int = 5;
+    int actual_int = Solution().carFleet(target, position, speed);
+    EXPECT_EQ( actual_int, expected_int );
 }
