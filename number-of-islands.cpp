@@ -59,53 +59,12 @@ coord operator+( const coord & lhs, const coord & rhs ) {
     return r;
 }
 
-coord operator+=( coord & self, const coord & other ) {
-    self.first += other.first;
-    self.second += other.second;
-    return self;
-}
-
-#if 0
-string to_string( const Grid & g ) {
-    ostringstream ss;
-    ss << endl;
-    for( auto & row: g ) {
-        for( auto & col: row ) {
-            ss << (( '1' == col ) ? '1' : ' ' );
-            ss << ' ';
-        }
-        ss << endl;
-    }
-    string s = ss.str();
-    s.pop_back();
-    return s;
-}
-#endif
-
 }
 
 class Solution {
 public:
 
-    int numIslands(vector<vector<char>>& _grid) {
-
-        const size_t _rows = _grid.size();
-        if ( 0 == _rows ) {
-            return 0;
-        }
-        const size_t _cols = _grid[ 0 ].size();
-        if ( 0 == _cols ) {
-            return 0;
-        }
-
-        const size_t rows = _rows + 2;
-        const size_t cols = _cols + 2;
-
-        vector<vector<char>> grid( rows, vector<char>( cols, 0 ) );
-
-        for( size_t row = 1; row < rows - 1; row++ ) {
-            copy( _grid[ row - 1 ].begin(), _grid[ row - 1 ].end(), grid[ row ].begin() + 1 );
-        }
+    int numIslands(vector<vector<char>>& grid) {
 
         // so my strategy here is more of an open-ended exploration algorithm
         // but it basically involves
@@ -127,18 +86,23 @@ public:
         // which is nice because it's linear, but it seems more complicated, generally,
         // and we're not necessarily looking for
 
-        //cerr << to_string( grid ) << endl;
+        const size_t M = grid.size();
+        if ( 0 == M ) {
+            return 0;
+        }
+        const size_t N = grid[ 0 ].size();
+        if ( 0 == N ) {
+            return 0;
+        }
 
         int n_islands = 0;
-        for( size_t row = 0; row < rows; row++ ) {
-            for( size_t col = 0; col < cols; col++ ) {
+        for( size_t row = 0; row < M; row++ ) {
+            for( size_t col = 0; col < N; col++ ) {
                 if ( '1' == grid[ row ][ col ] ) {
                     coord c( row, col );
                     island isle( grid, c );
-                    traceIsland(isle);
                     fillIsland(isle);
-                    erodeIsland(isle);
-                    //cerr << to_string( grid ) << endl;
+                    markVisited(isle);
                     n_islands++;
                 }
             }
@@ -154,113 +118,29 @@ protected:
         explicit island( Grid & g, const coord & c )
         :
             grid( g ),
-            perimeter( vector<coord>{{c.first - 1, c.second}} ),
-            dirt( unordered_set<coord>{ c } )
+            head( c )
         {
         }
 
         Grid & grid;
-        vector<coord> perimeter;
+        coord head;
         unordered_set<coord> dirt;
+
 
         char getGrid( const coord & c ) const {
             return grid[ c.first ][ c.second ];
         }
-    };
 
-    void traceIsland( island & isle ) {
-        // we will always start out such that the first encountered '1' is
-        // at ( perimeter[ 0 ].first + 1, perimeter[ 0 ].second )
-        // the row at perimeter[ 0 ].first is guaranteed to be all zeros
-        //
-        // we can also begin in the RIGHT direction
-
-        coord dir = RIGHT;
-        coord origin = isle.perimeter[0];
-        coord here = origin;
-
-        for( ;; ) {
-            if ( here == origin && 1 != isle.perimeter.size() ) {
-                break;
-            }
-
-            // Catholicism, WOW!! (just a joke about the ordering I chose "naturally" chose for this... )
-            if ( false ) {
-            } else if ( UP == dir ) {
-                if ( '1' == isle.getGrid( here + UP + RIGHT ) ) {
-                   if ( '1' == isle.getGrid( here + UP ) ) {
-                       // island turns left
-                       dir = LEFT;
-                   } else {
-                       // island continues up
-                       isle.perimeter.push_back( here + UP );
-                       here += UP;
-                   }
-                } else {
-                   // if the island does not continue up, keep it to the right of the
-                   // new direction, so go right
-                   dir = RIGHT;
-                   isle.perimeter.push_back( here + UP + RIGHT );
-                   here += UP + RIGHT;
-                }
-            } else if ( DOWN == dir ) {
-                if ( '1' == isle.getGrid( here + DOWN + LEFT ) ) {
-                   if ( '1' == isle.getGrid( here + DOWN ) ) {
-                       // island turns right
-                       dir = RIGHT;
-                   } else {
-                       // island continues down
-                       isle.perimeter.push_back( here + DOWN );
-                       here += DOWN;
-                   }
-                } else {
-                   // if the island does not continue down, keep it to the right of the
-                   // new direction, so go left
-                   dir = LEFT;
-                   isle.perimeter.push_back( here + DOWN + LEFT );
-                   here += DOWN + LEFT;
-                }
-            } else if ( LEFT == dir ) {
-                if ( '1' == isle.getGrid( here + UP + LEFT ) ) {
-                   if ( '1' == isle.getGrid( here + LEFT ) ) {
-                       // island turns down
-                       dir = DOWN;
-                   } else {
-                       // island continues left
-                       isle.perimeter.push_back( here + LEFT );
-                       here += LEFT;
-                   }
-                } else {
-                   // if the island does not continue left, keep it to the right of the
-                   // new direction, so go up
-                   dir = UP;
-                   isle.perimeter.push_back( here + UP + LEFT );
-                   here += UP + LEFT;
-                }
-            } else if ( RIGHT == dir ) {
-                // a '1' is known to be at (row+1,col)
-
-                if ( '1' == isle.getGrid( here + DOWN + RIGHT ) ) {
-                    if ( '1' == isle.getGrid( here + RIGHT ) ) {
-                        // island turns upward
-                        dir = UP;
-                    } else {
-                        // island continues right
-                        isle.perimeter.push_back( here + RIGHT );
-                        here += RIGHT;
-                    }
-                } else {
-                    // if the island does not continue to the right, keep it to the right of the
-                    // new direction, so go down
-                    dir = DOWN;
-                    isle.perimeter.push_back( here + DOWN + RIGHT );
-                    here += DOWN + RIGHT;
-                }
-            } else {
-                throw logic_error( "Aaaiiiieeeeee!" );
-            }
+        bool inBounds( const coord & c ) {
+            return
+                true
+                && c.first >= 0
+                && c.first < ssize_t( grid.size() )
+                && c.second >= 0
+                && c.second < ssize_t( grid[ 0 ].size() )
+                ;
         }
-    }
+    };
 
     void fillIsland( island & isle ) {
         // for now, ignore any potential "lakes" assume that islands are solid.
@@ -270,32 +150,24 @@ protected:
         // maybe just having a set of seed points to check should be fine
 
         unordered_set<coord> seeds;
-        unordered_set<coord> perimeter;
-        unordered_set<coord> dirt;
 
-        for( auto & p: isle.perimeter ) {
-            perimeter.insert( p );
-        }
-
-        seeds.insert( isle.perimeter[ 0 ] + DOWN );
+        seeds.insert( isle.head );
 
         for( ; ! seeds.empty() ; ) {
 
             coord seed = *seeds.begin();
             seeds.erase( seed );
-            dirt.insert( seed );
+            isle.dirt.insert( seed );
 
             for( auto & x: array<coord,4> { seed + UP, seed + DOWN, seed + LEFT, seed + RIGHT  } ) {
-                if ( '1' == isle.getGrid( x ) && perimeter.end() == perimeter.find( x ) && dirt.end() == dirt.find( x ) ) {
+                if ( isle.inBounds( x ) && '1' == isle.getGrid( x ) && isle.dirt.end() == isle.dirt.find( x ) ) {
                     seeds.insert( x );
                 }
             }
         }
-
-        isle.dirt = dirt;
     }
 
-    void erodeIsland( island & isle ) {
+    void markVisited( island & isle ) {
         // actually, we don't even need to do an erode, because we just need to binary mask the original grid
         for( auto & d: isle.dirt ) {
             isle.grid[ d.first ][ d.second ] = '0';
