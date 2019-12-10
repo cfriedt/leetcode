@@ -33,45 +33,60 @@ using namespace std;
 
 class Solution {
 public:
+
+    using ums = unordered_map<string,unordered_set<string>>;
+
+
     bool areSentencesSimilar(vector<string>& words1, vector<string>& words2, vector<vector<string>>& pairs) {
         
         if ( words1.size() != words2.size() ) {
             return false;
         }
         
-        using ums = unordered_map<string,unordered_set<string>>;
-        
         ums to;
-        ums fro;
         
         for( auto & p: pairs ) {
+            if ( p[ 0 ] == p[ 1 ] ) {
+                continue;
+            }
             to[ p[ 0 ] ].insert( p[ 1 ] );               
-            fro[ p[ 1 ] ].insert( p[ 0 ] );   
+            to[ p[ 1 ] ].insert( p[ 0 ] );
         }
         
         for( size_t i = 0, N = words1.size(); i < N; ++i ) {
-            if ( words1[ i ] == words2[ i ] ) {
-                continue;
+            if ( ! similar( words1[ i ], words2[ i ], to ) ) {
+                return false;
             }
-            
-            auto it1 = to.find( words1[ i ] );
-            if ( to.end() != it1 ) {
-                if ( it1->second.end() != it1->second.find( words2[ i ] ) ) {
-                    continue;
-                }
-            }
-            
-            auto it2 = fro.find( words1[ i ] );
-            if ( fro.end() != it2 ) {
-                if ( it2->second.end() != it2->second.find( words2[ i ] ) ) {
-                    continue;
-                }
-            }
-
-            return false;
         }
-        
+
         return true;
     }
-};
 
+    bool similar( const string & w1, const string & w2, const ums & to ) {
+        if ( w1 == w2 ) {
+            return true;
+        }
+
+        if ( directMapping( w1, w2, to ) ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    bool directMapping( const string & w1, const string & w2, const ums & to ) {
+        auto it1 = to.find( w1 );
+
+        if ( to.end() == it1 ) {
+            return false;
+        }
+
+        for( auto & s1: it1->second ) {
+            if ( w2 == s1 ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+};
