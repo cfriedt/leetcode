@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -34,10 +35,6 @@ public:
 	// https://leetcode.com/problems/car-fleet/
 
 	int carFleet(int target, vector<int>& position, vector<int>& speed) {
-
-	    (void) target;
-	    (void) position;
-	    (void) speed;
 
 	    // The idea here is that each car starts off as an independent fleet of one
 	    // then, instead of a fast fleet overtaking a slow fleet in front of it,
@@ -79,8 +76,56 @@ public:
 	    // a time-complexity that is dependent on the target rather than the
 	    // number of items.
 
+		struct fleet {
+			int pos;
+			int speed;
+			vector<int> cars;
+		};
+
+		vector<fleet> fleets;
+
+		for( size_t i = 0, N = position.size(); i < N; ++i ) {
+			fleets.push_back();
+		}
 
 
-	    return 0;
+	    vector<int *> fleet( speed.size(), nullptr );
+
+	    for(size_t i = 0, N = speed.size(); i < N; ++i ) {
+	    	fleet[ i ] = & speed[ i ];
+	    }
+
+	    struct comparator {
+	    	bool operator()( const int *a, const int *b ) const {
+	    		return *b > *a;
+	    	}
+	    };
+
+	    make_heap( fleet.begin(), fleet.end(), comparator() );
+
+	    int nfleets = 0;
+
+	    for( ; ! fleet.empty(); ) {
+	    	int *fastest = fleet.front();
+	    	//int fastest_speed = *fastest;
+	    	size_t fastest_idx = fastest - & speed.front();
+
+	    	if ( speed.size() - 1 == fastest_idx ) {
+
+	    		// fleet has crossed the finish line
+	    		nfleets++;
+	    		pop_heap( fleet.begin(), fleet.end() );
+	    		fleet.pop_back();
+
+	    	} else {
+
+	    		// this one simply joins with the fleet after it.
+	    		pop_heap( fleet.begin(), fleet.end() );
+	    		fleet.pop_back();
+
+	    	}
+	    }
+
+	    return nfleets;
 	}
 };
