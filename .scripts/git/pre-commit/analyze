@@ -38,11 +38,20 @@ def main( arg ):
     space_ranks = []
     malformed = []
 
-    problem_fixups = { 'peak-index-in-mountain-array': 'peak-index-in-a-mountain-array' }
+    repo = git.Repo('.')
 
     problems = getProblemList()
-
-    repo = git.Repo('.')
+    for diff in repo.index.diff("HEAD"):
+        suffix = '-test.cpp'
+        # do not attempt to collect stats from files that are staged for commit
+        a = diff.a_path
+        prefix = a[ : - len( suffix ) ]
+        if a.endswith( suffix ) and prefix in problems:
+            problems.remove( prefix )
+        b = diff.b_path
+        prefix = b[ : - len( suffix ) ]
+        if b.endswith( suffix ) and prefix in problems:
+            problems.remove( prefix )
 
     for p in problems:
 
