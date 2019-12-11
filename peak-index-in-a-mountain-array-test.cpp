@@ -26,7 +26,7 @@
 
 #include <gtest/gtest.h>
 
-#include "peak-index-in-mountain-array.cpp"
+#include "peak-index-in-a-mountain-array.cpp"
 
 using namespace std;
 
