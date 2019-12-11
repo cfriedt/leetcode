@@ -3,6 +3,9 @@
 import git
 import glob
 import sys
+import math
+import numpy as np
+from matplotlib import pyplot as plt
 
 def getProblemList():
     problems = []
@@ -11,6 +14,15 @@ def getProblemList():
         p = p[:-9]
         problems.append( p )
     return problems
+
+def plot( data, title ):
+    bins = np.linspace(math.ceil(min(data)),math.floor(max(data)),20)
+    plt.xlim([min(data), max(data)])
+    plt.hist(data, bins=bins, alpha=0.5)
+    plt.title( title )
+    plt.xlabel( 'percentile' )
+    plt.ylabel( '# results' )
+    plt.show()
 
 def main( arg ):
 
@@ -48,6 +60,7 @@ def main( arg ):
                                     try:
                                         time_rank = float( time_rank )
                                     except:
+                                        time_rank = -1
                                         break
                                     time_ranks.append( time_rank )
                                 if line.startswith( 'space-rank: ' ):
@@ -57,8 +70,11 @@ def main( arg ):
                                     try:
                                         space_rank = float( space_rank )
                                     except:
+                                        space_rank = -1
                                         break
                                     space_ranks.append( space_rank )
+                            if time_rank is -1 or space_rank is -1:
+                                break
                             print( '{}: time-rank: {} space-rank: {}'.format( p, time_rank, space_rank ) )
                             leetcode_stats_commit = commit
                             break
@@ -69,9 +85,12 @@ def main( arg ):
             malformed.append( p )
             continue
 
-    print( 'time_ranks: {}: {}'.format( len( time_ranks ), time_ranks ) )
-    print( 'space_ranks: {}: {}'.format( len( space_ranks ), space_ranks ) )
+    print( 'time_ranks: len: {}: avg: {}: {}'.format( len( time_ranks ), np.average( time_ranks ), time_ranks ) )
+    print( 'space_ranks: len: {}: avg: {}: {}'.format( len( space_ranks ), np.average( space_ranks ), space_ranks ) )
     print( 'malformed: {}: {}'.format( len( malformed ), malformed ) )
+
+    plot( time_ranks, 'Time Rank' )
+    plot( space_ranks, 'Space Rank' )
 
     return retval
 
