@@ -54,10 +54,11 @@ def main( arg ):
 
                 msg = commit.message
 
+                time_rank = -1
+                space_rank = -1
+
                 if 'https://leetcode.com/problems/' + p in msg or 'Implement ' + p in msg:
                         if 'time-rank: ' in msg and 'space-rank: ' in msg:
-                            time_rank = 0.0
-                            space_rank = 0.0
                             for line in msg.splitlines():
                                 if line.startswith( 'time-rank: ' ):
                                     words = line.split()
@@ -80,7 +81,8 @@ def main( arg ):
                                         break
                                     space_ranks.append( space_rank )
                             if time_rank is -1 or space_rank is -1:
-                                break
+                                continue
+
                             #print( '{}: time-rank: {} space-rank: {}'.format( p, time_rank, space_rank ) )
                             leetcode_stats_commit = commit
                             break
@@ -93,7 +95,10 @@ def main( arg ):
 
     #print( 'time_ranks: len: {}: avg: {}: {}'.format( len( time_ranks ), np.average( time_ranks ), time_ranks ) )
     #print( 'space_ranks: len: {}: avg: {}: {}'.format( len( space_ranks ), np.average( space_ranks ), space_ranks ) )
+    malformed.sort()
     #print( 'malformed: {}: {}'.format( len( malformed ), malformed ) )
+    #for f in malformed:
+    #    print( f + '.cpp' )
 
     plot( time_ranks, 'Time Rank', '.scripts/time-rank.png' )
     repo.git.add( '.scripts/time-rank.png' )
