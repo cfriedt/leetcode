@@ -95,8 +95,7 @@ def main( arg ):
 
     #print( 'time_ranks: len: {}: avg: {}: {}'.format( len( time_ranks ), np.average( time_ranks ), time_ranks ) )
     #print( 'space_ranks: len: {}: avg: {}: {}'.format( len( space_ranks ), np.average( space_ranks ), space_ranks ) )
-    malformed.sort()
-    #print( 'malformed: {}: {}'.format( len( malformed ), malformed ) )
+    #malformed.sort()
     #for f in malformed:
     #    print( f + '.cpp' )
 
@@ -106,8 +105,7 @@ def main( arg ):
     plot( space_ranks, 'Space Rank', '.scripts/space-rank.png' )
     repo.git.add( '.scripts/space-rank.png'  )
 
-    return 0
-    #return retval
+    return retval
 
 if '__main__' == __name__:
     sys.exit( main( sys.argv ) )
