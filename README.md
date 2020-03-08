@@ -6,7 +6,3 @@
 
 # leetcode
 Collection of solutions for problems at https://leetcode.com/
-
-![Time Rank](https://raw.githubusercontent.com/cfriedt/leetcode/master/.scripts/time-rank.png)
-
-![Space Rank](https://raw.githubusercontent.com/cfriedt/leetcode/master/.scripts/space-rank.png)
