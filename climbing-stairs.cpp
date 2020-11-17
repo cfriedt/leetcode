@@ -23,6 +23,7 @@
  */
 
 #include <unordered_map>
+#include <vector>
 
 using namespace std;
 
@@ -30,24 +31,41 @@ using namespace std;
 
 class Solution {
 public:
-  int helper(int n, unordered_map<int, int> &mem) {
-    auto it = mem.find(n);
+  // recursion with memoization
+  // non-optimal in terms of space used
+  /*
+    int helper(int n, unordered_map<int, int>& mem) {
+      auto it = mem.find(n);
 
-    if (mem.end() != it) {
-      return it->second;
+      if (mem.end() != it) {
+        return it->second;
+      }
+
+      if (n <= 2) {
+        mem[n] = n;
+      } else {
+        mem[n] = helper(n - 1, mem) + helper(n - 2, mem);
+      }
+
+      return mem[n];
     }
 
-    if (n <= 2) {
-      mem[n] = n;
-    } else {
-      mem[n] = helper(n - 1, mem) + helper(n - 2, mem);
+    int climbStairs(int n) {
+      unordered_map<int, int> mem;
+      return helper(n, mem);
     }
+  */
 
-    return mem[n];
-  }
-
+  // DP solution:
+  // 1. can be broken into subproblems
+  // 2. has optimal substructure
   int climbStairs(int n) {
-    unordered_map<int, int> mem;
-    return helper(n, mem);
+    // number of ways to reach ith step is
+    // dp[i] = dp[i-1] + dp[i-2]
+    vector<int> dp(n + 1, 1);
+    for (int i = 2; i <= n; ++i) {
+      dp[i] = dp[i - 1] + dp[i - 2];
+    }
+    return dp[n];
   }
 };

@@ -27,11 +27,7 @@
 #include "climbing-stairs.cpp"
 
 TEST(ClimbingStairs, 0) { EXPECT_EQ(0, Solution().climbStairs(0)); }
-
 TEST(ClimbingStairs, 1) { EXPECT_EQ(1, Solution().climbStairs(1)); }
-
 TEST(ClimbingStairs, 2) { EXPECT_EQ(2, Solution().climbStairs(2)); }
-
 TEST(ClimbingStairs, 3) { EXPECT_EQ(3, Solution().climbStairs(3)); }
-
 TEST(ClimbingStairs, 45) { EXPECT_EQ(1836311903, Solution().climbStairs(45)); }
