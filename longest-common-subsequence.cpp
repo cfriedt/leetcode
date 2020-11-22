@@ -89,30 +89,30 @@ public:
     */
     // map the 'x' size onto the upper 32 bits and the
     // 'y' size onto the lower 32 bits.
-    unordered_map<uint64_t, int> dp;
+    vector<vector<int>> dp(text1.size() + 1, vector<int>(text2.size() + 1, -1));
+    for (size_t m = 0, M = text1.size(); m <= M; ++m) {
+      dp[m][0] = 0;
+    }
+    for (size_t n = 0, N = text2.size(); n <= N; ++n) {
+      dp[0][n] = 0;
+    }
     return lcs(dp, text1, text1.size(), text2, text2.size());
   }
 
-  int lcs(unordered_map<uint64_t, int> &dp, const string &x, int m,
-          const string &y, int n) {
-    if (m == 0 || n == 0) {
-      return 0;
+  int lcs(vector<vector<int>> &dp, const string &x, int m, const string &y,
+          int n) {
+    if (dp[m][n] != -1) {
+      return dp[m][n];
     }
 
-    uint64_t key = (uint64_t(m) << 32) | (uint64_t(n) << 0);
-    auto it = dp.find(key);
-    if (dp.end() == it) {
-      int _lcs;
-      if (x[m - 1] == y[n - 1]) {
-        _lcs = 1 + lcs(dp, x, m - 1, y, n - 1);
-      } else {
-        _lcs = max(lcs(dp, x, m - 1, y, n), lcs(dp, x, m, y, n - 1));
-      }
-      int val = _lcs;
-      dp[key] = val;
-      return _lcs;
+    int _lcs;
+    if (x[m - 1] == y[n - 1]) {
+      _lcs = 1 + lcs(dp, x, m - 1, y, n - 1);
     } else {
-      return it->second;
+      _lcs = max(lcs(dp, x, m - 1, y, n), lcs(dp, x, m, y, n - 1));
     }
+
+    dp[m][n] = _lcs;
+    return _lcs;
   }
 };
