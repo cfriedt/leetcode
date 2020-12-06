@@ -22,37 +22,23 @@
  * SOFTWARE.
  */
 
-#include <unordered_set>
-
 using namespace std;
 
 // https://leetcode.com/problems/linked-list-cycle-ii
 
+#define CYCLE 0xc7c1e
+
 class Solution {
 public:
+  // this solution is destructive of the input, but it's O(1) space complexity
   ListNode *detectCycle(ListNode *head) {
-    unordered_set<ListNode *> visited;
     ListNode *it;
     for (it = head; it != NULL; it = it->next) {
-      if (visited.end() != visited.find(it)) {
+      if (it->val == CYCLE) {
         return it;
       }
-      visited.insert(it);
+      it->val = CYCLE;
     }
     return it;
   }
-
-  /*
-    // Recursive solution (obviously better to use iterative)
-    ListNode *helper(unordered_set<ListNode *> &visited, ListNode *n) {
-      if (NULL == n) {
-        return NULL;
-      }
-      if (visited.end() != visited.find(n)) {
-        return n;
-      }
-      visited.insert(n);
-      return helper(visited, n->next);
-    }
-  */
 };
