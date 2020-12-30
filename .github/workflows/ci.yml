@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # This only works with the "matrix" strategy
+    #fail-fast: false
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Environment
+      run: |
+        sudo apt-get update
+        sudo apt install -y cmake clang clang-tidy gcovr
+        sudo sh .scripts/build-and-install-libgtest-libraries.sh
+
+    - name: Build
+      run: |
+        make -j`nproc --all`
+
+    - name: Test
+      run: |
+        make check
+
+    - name: Coverage
+      run: |
+        make gcov
+        bash <(curl -s https://codecov.io/bash)
