@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Christopher Friedt
+ * Copyright (c) 2020 Christopher Friedt
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,18 +22,20 @@
  * SOFTWARE.
  */
 
-#ifndef UTIL_TRIM_HPP_
-#define UTIL_TRIM_HPP_
+#include "util/ListNode.hpp"
 
-#include <ctype.h>
-#include <string>
-static inline void trim( std::string & s ) {
-	for( ; !s.empty() && ::isspace( s[ 0 ] ); ) {
-		s = s.substr( 1 );
-	}
-	for( ; !s.empty() && ::isspace( s[ s.length() - 1 ] ); ) {
-		s.pop_back();
-	}
-}
-
-#endif /* UTIL_TRIM_HPP_ */
+class Solution {
+public:
+  void deleteNode(ListNode *node) {
+    ListNode *prev = nullptr;
+    for (ListNode *it = node; it != nullptr; prev = it, it = it->next) {
+      if (it->next == nullptr) {
+        if (prev != nullptr) {
+          prev->next = nullptr;
+        }
+      } else {
+        it->val = it->next->val;
+      }
+    }
+  }
+};
