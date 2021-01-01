@@ -31,6 +31,32 @@
 
 using namespace std;
 
+template <typename T>
+ostream& operator<<(ostream& os, const vector<T>& v) {
+	os << "[";
+	for(size_t i = 0; i < v.size(); ++i) {
+		os << v[i];
+		if (i < v.size() - 1) {
+			os << ", ";
+		}
+	}
+	os << "]";
+	return os;
+}
+
+void replace_all(string& s, const string& substring, const string& replacement) {
+	size_t pos;
+	size_t len = substring.size();
+
+	if (len == 0) {
+		return;
+	}
+
+	for(pos = s.find(substring); pos != string::npos; pos = s.find(substring)) {
+		s.replace(pos, len, replacement);
+	}
+}
+
 ListNode *ListNode_from_string( const string & s ) {
 
 	ListNode head(-1);
@@ -38,8 +64,12 @@ ListNode *ListNode_from_string( const string & s ) {
 
 	string _s( s );
 
-	replace( _s.begin(), _s.end(), '-', ' ' );
-	replace( _s.begin(), _s.end(), '>', ' ' );
+	replace_all(_s, "->", " ");
+	replace_all(_s, ",", " ");
+	replace_all(_s, "[", " ");
+	replace_all(_s, "]", " ");
+
+	trim(_s);
 
 	vector<string> elements = split( _s );
 

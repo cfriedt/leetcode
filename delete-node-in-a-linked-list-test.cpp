@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 Christopher Friedt
+ * Copyright (c) 2020 Christopher Friedt
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-#ifndef UTIL_TRIM_HPP_
-#define UTIL_TRIM_HPP_
+#include <gtest/gtest.h>
 
-#include <ctype.h>
-#include <string>
-static inline void trim( std::string & s ) {
-	for( ; !s.empty() && ::isspace( s[ 0 ] ); ) {
-		s = s.substr( 1 );
-	}
-	for( ; !s.empty() && ::isspace( s[ s.length() - 1 ] ); ) {
-		s.pop_back();
-	}
+#include "delete-node-in-a-linked-list.cpp"
+#include "util/ListNode.cpp"
+
+using namespace std;
+
+TEST(DeleteNodeInALinkedList, 4_5_1_9__5) {
+  ListNode *head = ListNode_from_string("4->5->1->9");
+  ASSERT_EQ(head->next->val, 5);
+  string expected = "4->1->9";
+  Solution().deleteNode(head->next);
+  string actual = ListNode_to_string(head);
+  EXPECT_EQ(expected, actual);
 }
-
-#endif /* UTIL_TRIM_HPP_ */
