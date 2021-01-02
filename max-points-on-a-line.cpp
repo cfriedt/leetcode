@@ -30,6 +30,61 @@
 
 using namespace std;
 
+int gcd(int a, int b) {
+  if (b > a) {
+    swap(a, b);
+  }
+
+  for (; b != 0;) {
+    auto t = b;
+    b = a % b;
+    a = t;
+  }
+
+  return a;
+}
+
+void reduce(int &num, int &den) {
+  if (den == 0) {
+    num = INT_MAX;
+  }
+
+  if (num == 0 || den == 0) {
+    return;
+  }
+
+  int sign = +1;
+  if (num < 0 && den < 0) {
+    num = -num;
+    den = -den;
+  }
+
+  if (num < 0) {
+    sign = -1;
+    num = -num;
+  }
+  if (den < 0) {
+    sign = -1;
+    den = -den;
+  }
+
+  if ((num % den) == 0 && den != 1) {
+    num /= den;
+    den /= den;
+  }
+
+  do {
+    int d = gcd(num, den);
+    if (d == 1) {
+      break;
+    }
+    num /= d;
+    den /= d;
+  } while (true);
+
+  num = sign * num;
+}
+
 struct Point {
   Point() : Point(0, 0) {}
   Point(int x, int y) : x(x), y(y) {}
@@ -47,48 +102,60 @@ template <> struct hash<Point> {
 } // namespace std
 
 struct Slope {
-  Slope() : Slope(0) {}
-  Slope(Point a, Point b) : Slope(0) {
-    int num = b.y - a.y;
-    int den = b.x - a.x;
-    if (den == 0) {
-      m = numeric_limits<double>::infinity();
-    } else {
-      m = double(num) / double(den);
+  Slope() : Slope(Point(), Point()) {}
+  Slope(Point a, Point b) : Slope(b.y - a.y, b.x - a.x) {}
+  Slope(int num, int den) : num(num), den(den) {
+    reduce(this->num, this->den);
+    if (this->num == 0) {
+      this->den = 1;
     }
   }
-  Slope(double m) : m(m) {}
-  double m;
-  bool operator==(const Slope &o) const { return m == o.m; }
+  int num;
+  int den;
+  bool operator==(const Slope &o) const { return num == o.num && den == o.den; }
 };
 
 namespace std {
 template <> struct hash<Slope> {
-  size_t operator()(const Slope &m) const { return hash<double>()(m.m); }
+  size_t operator()(const Slope &m) const {
+    return ((hash<int>()(m.num) ^ (hash<int>()(m.den) << 1)) >> 1);
+  }
 };
 } // namespace std
 
 struct Intercept {
-  Intercept() : Intercept(0, 0) {}
-  Intercept(Point a, Point b) : Intercept(0, 0) {
-    m = double(b.y - a.y) / double(b.x - a.x);
-    y = a.y - m * a.x;
+  Intercept() : Intercept(Point(), Point()) {}
+  Intercept(Point a, Point b) : Intercept(b, Slope(a, b)) {}
+  Intercept(Point a, Slope m) : m(m) {
+    if (m.num == INT_MAX) {
+      // In this case, we are representing a vertical line
+      // store the x-intercept in (num, den)
+      num = a.x;
+      den = 1;
+    } else {
+      // store the y-intercept in (num, den)
+      num = int(m.den * int64_t(a.y) - m.num * int64_t(a.x));
+      den = m.den;
+    }
+    reduce(num, den);
+
+    if (m.num != INT_MAX && num == 0) {
+      den = 1;
+    }
   }
-  Intercept(Point a, Slope m) : Intercept(0, 0) {
-    this->m = m.m;
-    y = a.y - this->m * a.x;
+  Slope m;
+  int num;
+  int den;
+  bool operator==(const Intercept &o) const {
+    return num == o.num && den == o.den && m == o.m;
   }
-  Intercept(double y, double m) : y(y), m(m) {}
-  double y;
-  double m;
-  bool operator==(const Intercept &o) const { return y == o.y && m == o.m; }
-  bool operator!=(const Intercept &o) const { return y != o.y || m != o.m; }
 };
 
 namespace std {
 template <> struct hash<Intercept> {
   size_t operator()(const Intercept &i) const {
-    return ((hash<double>()(i.y) ^ (hash<double>()(i.m) << 1)) >> 1);
+    return ((hash<Slope>()(i.m) ^ (hash<Slope>()(Slope(i.num, i.den)) << 1)) >>
+            1);
   }
 };
 } // namespace std
@@ -130,12 +197,11 @@ public:
           with_slope[m] += count[keys[i]];
         }
         with_slope[m] += count[keys[j]];
-        // cout
-        //     << "a: (" << keys[i].x << ", " << keys[i].y << ") "
-        //     << "-> "
-        //     << "b: (" << keys[j].x << ", " << keys[j].y << ") "
-        //     << "m: " << float(m.m)
-        //     << ": with_slope[m]: " << with_slope[m] << endl;
+        //        clog << "a: (" << keys[i].x << ", " << keys[i].y << ") "
+        //             << "-> "
+        //             << "b: (" << keys[j].x << ", " << keys[j].y << ") "
+        //             << "m: " << m.num << "/" << m.den
+        //             << ": with_slope[m]: " << with_slope[m] << endl;
         maxpoints = max(maxpoints, with_slope[m]);
       }
 
