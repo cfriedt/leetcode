@@ -28,11 +28,26 @@
 
 using namespace std;
 
-#if 0
-TEST(GCD, 18_4) { EXPECT_EQ(2, gcd(18, 4)); }
+TEST(GCD, 5_0) { EXPECT_EQ(5, gcd(5, 0)); }
+TEST(GCD, 0_5) { EXPECT_EQ(5, gcd(0, 5)); }
 
+TEST(GCD, 5_1) { EXPECT_EQ(1, gcd(5, 1)); }
+TEST(GCD, 1_5) { EXPECT_EQ(1, gcd(1, 5)); }
+
+TEST(GCD, 4_2) { EXPECT_EQ(2, gcd(4, 2)); }
+TEST(GCD, 2_4) { EXPECT_EQ(2, gcd(2, 4)); }
+
+TEST(GCD, 18_4) { EXPECT_EQ(2, gcd(18, 4)); }
 TEST(GCD, 4_18) { EXPECT_EQ(2, gcd(4, 18)); }
-#endif
+
+TEST(GCD, 4_28) { EXPECT_EQ(4, gcd(4, 28)); }
+TEST(GCD, 28_4) { EXPECT_EQ(4, gcd(28, 4)); }
+
+TEST(GCD, 7_18) { EXPECT_EQ(1, gcd(7, 18)); }
+TEST(GCD, 18_7) { EXPECT_EQ(1, gcd(18, 7)); }
+
+TEST(GCD, 160_42) { EXPECT_EQ(2, gcd(160, 42)); }
+TEST(GCD, 42_160) { EXPECT_EQ(2, gcd(42, 160)); }
 
 TEST(MaxPointsOnALine, 1_1__2_2__3_3) {
   vector<vector<int>> points = {
@@ -108,5 +123,13 @@ TEST(
       {-9, 14},  {-5, -1},   {-18, -17}, {9, -10},   {19, 19},   {16, 7},
       {3, 7},    {-18, -12}, {-11, 12},  {-15, 20},  {-3, 4},    {-18, 1},
       {13, 17},  {-16, -15}, {-9, -9},   {15, 8},    {19, -9},   {9, -17}};
+  EXPECT_EQ(6, Solution().maxPoints(points));
+}
+
+TEST(MaxPointsOnALine,
+     84_250__0_0__1_0__0_n70__0_n70__1_n1__21_10__42_90__n42_n230) {
+  vector<vector<int>> points = {{84, 250}, {0, 0},   {1, 0},
+                                {0, -70},  {0, -70}, {1, -1},
+                                {21, 10},  {42, 90}, {-42, -230}};
   EXPECT_EQ(6, Solution().maxPoints(points));
 }
