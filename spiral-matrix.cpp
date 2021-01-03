@@ -10,8 +10,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -28,53 +28,61 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> spiralOrder(vector<vector<int>>& matrix) {
-        const int M = matrix.size();
-        const int N = ( 0 == M ) ? 0 : matrix[0].size();
+  vector<int> spiralOrder(vector<vector<int>> &matrix) {
+    constexpr int VISITED = 0xff;
+    enum dir {
+      RIGHT,
+      DOWN,
+      LEFT,
+      UP,
+    };
+    const int M = matrix.size();
+    const int N = matrix[0].size();
+    const size_t L = M * N;
 
-        enum { RIGHT, DOWN, LEFT, UP };
+    enum dir dir = RIGHT;
+    vector<int> elements;
 
-        vector<int> r( M*N, 0 );
+    for (int row = 0, col = 0; elements.size() < L;) {
 
-        for( int dir = RIGHT, row = 0, col = 0, i = 0; i < M * N; i++ ) {
-            r[ i ] = matrix[ row ][ col ];
-            matrix[ row ][ col ] = 0xdeadbeef;
-            switch( dir ) {
-                case RIGHT:
-                    if ( N - 1 == col || int( 0xdeadbeef ) == matrix[ row ][ col + 1 ] ) {
-                        dir = DOWN;
-                        row++;
-                    } else {
-                        col++;
-                    }
-                    break;
-                case DOWN:
-                    if( M - 1 == row || int( 0xdeadbeef ) == matrix[ row + 1 ][ col ] ) {
-                        dir = LEFT;
-                        col--;
-                    } else {
-                        row++;
-                    }
-                    break;
-                case LEFT:
-                    if ( 0 == col || int( 0xdeadbeef ) == matrix[ row ][ col - 1 ] ) {
-                        dir = UP;
-                        row--;
-                    } else {
-                        col--;
-                    }
-                    break;
-                case UP:
-                    if ( 0 == row || int( 0xdeadbeef ) == matrix[ row - 1 ][ col ] ) {
-                        dir = RIGHT;
-                        col++;
-                    } else {
-                        row--;
-                    }
-                    break;
-            }
+      int &val = matrix[row][col];
+      if (val != VISITED) {
+        elements.push_back(val);
+        val = VISITED;
+      }
+
+      switch (dir) {
+      case RIGHT:
+        if (col + 1 >= N || matrix[row][col + 1] == VISITED) {
+          dir = DOWN;
+        } else {
+          ++col;
         }
-
-        return r;
+        break;
+      case DOWN:
+        if (row + 1 >= M || matrix[row + 1][col] == VISITED) {
+          dir = LEFT;
+        } else {
+          ++row;
+        }
+        break;
+      case LEFT:
+        if (col - 1 < 0 || matrix[row][col - 1] == VISITED) {
+          dir = UP;
+        } else {
+          --col;
+        }
+        break;
+      case UP:
+        if (row - 1 < 0 || matrix[row - 1][col] == VISITED) {
+          dir = RIGHT;
+        } else {
+          --row;
+        }
+        break;
+      }
     }
+
+    return elements;
+  }
 };
