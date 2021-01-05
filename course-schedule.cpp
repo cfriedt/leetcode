@@ -30,19 +30,9 @@
 
 using namespace std;
 
-ostream &operator<<(ostream &os, const unordered_set<int> &s) {
-  os << "[";
-  int i = 0, N = s.size();
-  for (auto &j : s) {
-    os << j;
-    if (i < N - 1) {
-      os << ", ";
-    }
-    ++i;
-  }
-  os << "]";
-  return os;
-}
+
+
+
 
 class Solution {
 public:
