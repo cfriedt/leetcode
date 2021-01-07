@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from datetime import datetime
 import git
 import glob
 import sys
@@ -114,10 +115,10 @@ def main( arg ):
     #for f in malformed:
     #    print( f + '.cpp' )
 
-    plot( time_ranks, 'Time Rank', '.scripts/time-rank.png' )
+    plot( time_ranks, 'Time Rank ({})'.format(datetime.now().strftime('%Y-%m-%d')), '.scripts/time-rank.png' )
     repo.git.add( '.scripts/time-rank.png' )
 
-    plot( space_ranks, 'Space Rank', '.scripts/space-rank.png' )
+    plot( space_ranks, 'Space Rank ({})'.format(datetime.now().strftime('%Y-%m-%d')), '.scripts/space-rank.png' )
     repo.git.add( '.scripts/space-rank.png'  )
 
     return retval
