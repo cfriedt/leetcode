@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2018 Christopher Friedt
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include <gtest/gtest.h>
 
 #include "TreeNode.cpp"
