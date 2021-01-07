@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2018 Christopher Friedt
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 // https://leetcode.com/problems/word-break/
 // https://leetcode.com/problems/word-break/discuss/43814/C%2B%2B-Dynamic-Programming-simple-and-fast-solution-(4ms)-with-optimization
 

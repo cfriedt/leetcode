@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2018 Christopher Friedt
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef UTIL_FOREST_HPP_
 #define UTIL_FOREST_HPP_
 
