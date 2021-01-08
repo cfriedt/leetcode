@@ -5,3 +5,4 @@
 *.gcov
 .*project
 .settings/
+__pycache__/
