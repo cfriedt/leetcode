@@ -11,26 +11,38 @@ jobs:
     runs-on: ubuntu-latest
     # This only works with the "matrix" strategy
     #fail-fast: false
+
+    env:
+      PYTHONPATH: ${{ github.workspace }}/.scripts
+
     steps:
 
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Setup Environment
+    - name: Setup Python Environment
+      run: |
+        sudo apt install -y python3-pytest
+
+    - name: Test Python
+      run: |
+        pytest-3 .scripts/*_test.py
+
+    - name: Setup C++ CEnvironment
       run: |
         sudo apt-get update
         sudo apt install -y cmake clang clang-tidy gcovr
         sudo sh .scripts/build-and-install-libgtest-libraries.sh
 
-    - name: Build
+    - name: Build C++
       run: |
         make -j`nproc --all`
 
-    - name: Test
+    - name: Test C++
       run: |
         make check
 
-    - name: Coverage
+    - name: Get C++ Test Coverage
       run: |
         make gcov
         bash <(curl -s https://codecov.io/bash)
