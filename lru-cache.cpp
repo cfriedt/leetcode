@@ -47,75 +47,75 @@ using namespace std;
 
 class LRUCache {
 protected:
-	struct dll {
-		int key;
-		int val;
-		dll *prev;
-		dll *next;
-		dll() : key( -1 ), val( -1 ), prev( this ), next( this ) {}
-	};
-	unordered_map<int,dll*> lut;
-	dll head;
-	int capacity;
+  struct dll {
+    int key;
+    int val;
+    dll *prev;
+    dll *next;
+    dll() : key(-1), val(-1), prev(this), next(this) {}
+  };
+  unordered_map<int, dll *> lut;
+  dll head;
+  int capacity;
 
-	void addTail( dll *node ) {
-		if ( node == & head ) {
-			throw logic_error( "attempt to add head to doubly-linked-list" );
-		}
-		dll *tail = head.prev;
-		tail->next = node;
-		node->next = & head;
-		node->prev = tail;
-		head.prev = node;
-	}
-	dll *removeNode( dll *node ) {
-		if ( node == & head ) {
-			throw logic_error( "attempt to to remove head from doubly-linked-list" );
-		}
-		dll *prev = node->prev;
-		dll *next = node->next;
-		prev->next = node->next;
-		next->prev = node->prev;
-		node->next = nullptr;
-		node->prev = nullptr;
-		return node;
-	}
+  void addTail(dll *node) {
+    if (node == &head) {
+      throw logic_error("attempt to add head to doubly-linked-list");
+    }
+    dll *tail = head.prev;
+    tail->next = node;
+    node->next = &head;
+    node->prev = tail;
+    head.prev = node;
+  }
+  dll *removeNode(dll *node) {
+    if (node == &head) {
+      throw logic_error("attempt to to remove head from doubly-linked-list");
+    }
+    dll *prev = node->prev;
+    dll *next = node->next;
+    prev->next = node->next;
+    next->prev = node->prev;
+    node->next = nullptr;
+    node->prev = nullptr;
+    return node;
+  }
 
 public:
-    LRUCache(int capacity) : capacity( capacity ) {}
+  LRUCache(int capacity) : capacity(capacity) {}
 
-    int get(int key) {
-    	if ( capacity <= 0 ) {
-    		return -1;
-    	}
-    	if ( lut.count( key ) ) {
-    		dll *node = lut[ key ];
-    		removeNode( node );
-    		addTail( node );
-    		return node->val;
-    	}
-    	return -1;
+  int get(int key) {
+    if (capacity <= 0) {
+      return -1;
     }
+    if (lut.count(key)) {
+      dll *node = lut[key];
+      removeNode(node);
+      addTail(node);
+      return node->val;
+    }
+    return -1;
+  }
 
-    void put(int key, int value) {
-    	dll *node;
-    	if ( capacity <= 0 ) {
-    		return;
-    	}
-    	if ( lut.count( key ) ) {
-    		node = removeNode( lut[ key ] );
-    	} else if ( lut.size() == size_t( capacity ) ) {
-    		node = removeNode( head.next );
-    		lut.erase( node->key );
-    		lut[ key ] = node;
-    	} else {
-    		node = new dll;
-    		lut[ key ] = node;
-    	}
-    	node->key = key;
-		node->val = value;
-    	addTail( node );
+  void put(int key, int value) {
+    dll *node;
+    if (capacity <= 0) {
+      return;
     }
+    if (lut.count(key)) {
+      node = removeNode(lut[key]);
+    } else if (lut.size() == size_t(capacity)) {
+      node = removeNode(head.next);
+      lut.erase(node->key);
+      lut[key] = node;
+    } else {
+      node = new dll;
+      lut[key] = node;
+    }
+    node->key = key;
+    node->val = value;
+    addTail(node);
+  }
 };
 
 /**

@@ -8,9 +8,9 @@
 
 #include "longest-palindromic-substring.cpp"
 
-TEST( LongestPalindromicSubstring, Test_babad ) {
-	string s("babad");
-	string expected_string("bab");
-	string actual_string = Solution().longestPalindrome(s);
-	EXPECT_EQ(actual_string, expected_string);
+TEST(LongestPalindromicSubstring, Test_babad) {
+  string s("babad");
+  string expected_string("bab");
+  string actual_string = Solution().longestPalindrome(s);
+  EXPECT_EQ(actual_string, expected_string);
 }

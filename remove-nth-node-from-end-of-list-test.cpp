@@ -13,39 +13,36 @@
 class RemoveNthNodeFromEndOfList : public ::testing::Test {
 
 public:
+  RemoveNthNodeFromEndOfList() : n(-1), head(nullptr), output(nullptr) {}
 
-	RemoveNthNodeFromEndOfList() : n( -1 ), head( nullptr ), output( nullptr ) {}
+  int n;
+  ListNode *head;
+  ListNode *output;
+  string input;
+  string expected_string;
+  string actual_string;
+  Solution soln;
 
-	int n;
-	ListNode *head;
-	ListNode *output;
-	string    input;
-	string    expected_string;
-	string    actual_string;
-	Solution  soln;
+  void mSetUp() {
+    // needs to be called from within test case
+    head = ListNode_from_string(input);
+  }
 
-	void mSetUp() {
-		// needs to be called from within test case
-		head = ListNode_from_string( input );
-	}
+  void doTest() {
+    output = soln.removeNthFromEnd(head, n);
+    actual_string = ListNode_to_string(output);
 
-	void doTest() {
-		output = soln.removeNthFromEnd( head, n );
-		actual_string = ListNode_to_string( output );
+    EXPECT_EQ(actual_string, expected_string);
+  }
 
-		EXPECT_EQ( actual_string, expected_string );
-	}
-
-	virtual void TearDown() override {
-		ListNode_cleanup( & output );
-	}
+  virtual void TearDown() override { ListNode_cleanup(&output); }
 };
 
-TEST_F( RemoveNthNodeFromEndOfList, Test_1_2_3_4_5__2 ) {
-	input = "1->2->3->4->5";
-	n = 2;
-	expected_string = "1->2->3->5";
+TEST_F(RemoveNthNodeFromEndOfList, Test_1_2_3_4_5__2) {
+  input = "1->2->3->4->5";
+  n = 2;
+  expected_string = "1->2->3->5";
 
-	mSetUp();
-	doTest();
+  mSetUp();
+  doTest();
 }

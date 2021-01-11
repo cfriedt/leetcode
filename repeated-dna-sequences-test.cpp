@@ -8,9 +8,9 @@
 
 #include "repeated-dna-sequences.cpp"
 
-TEST( RepeatedDnaSequences, Test_AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT ) {
-	string s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT";
-	vector<string> expected_vs = { "AAAAACCCCC", "CCCCCAAAAA" };
-	vector<string> actual_vs = Solution().findRepeatedDnaSequences(s);
-	EXPECT_EQ(actual_vs, expected_vs);
+TEST(RepeatedDnaSequences, Test_AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT) {
+  string s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT";
+  vector<string> expected_vs = {"AAAAACCCCC", "CCCCCAAAAA"};
+  vector<string> actual_vs = Solution().findRepeatedDnaSequences(s);
+  EXPECT_EQ(actual_vs, expected_vs);
 }

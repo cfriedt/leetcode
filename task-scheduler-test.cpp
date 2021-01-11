@@ -57,11 +57,9 @@ TEST(TaskScheduler, ABCDEABCDE_4) {
 }
 
 TEST(TaskScheduler, ABCDEFGHIJKLMNOPQRSTUVWXYZ_15) {
-  vector<char> tasks = {
-'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-'U', 'V', 'W', 'X', 'Y', 'Z'
-  };
+  vector<char> tasks = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+                        'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+                        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
   int n = 15;
   EXPECT_EQ(26, Solution().leastInterval(tasks, n));
 }

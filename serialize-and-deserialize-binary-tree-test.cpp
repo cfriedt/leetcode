@@ -6,7 +6,10 @@
 
 #include <gtest/gtest.h>
 
+// clang-format off
 #include "util/TreeNode.hpp"
+// clang-format on
+
 #include "serialize-and-deserialize-binary-tree.cpp"
 
 #ifndef NNULL

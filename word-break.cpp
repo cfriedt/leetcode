@@ -15,33 +15,31 @@ using namespace std;
 
 class Solution {
 public:
-	bool wordBreak(const string & s, const vector<string> & wordDict) {
-		unordered_set<string> wd( wordDict.begin(), wordDict.end() );
-		return wordBreak( s, wd );
-	}
+  bool wordBreak(const string &s, const vector<string> &wordDict) {
+    unordered_set<string> wd(wordDict.begin(), wordDict.end());
+    return wordBreak(s, wd);
+  }
+
 protected:
-	bool wordBreak(const string & s, const unordered_set<string>& wordDict) {
-        if(wordDict.size()==0) return false;
+  bool wordBreak(const string &s, const unordered_set<string> &wordDict) {
+    if (wordDict.size() == 0)
+      return false;
 
-        vector<bool> dp(s.size()+1,false);
-        dp[0]=true;
+    vector<bool> dp(s.size() + 1, false);
+    dp[0] = true;
 
-        for(int i=1;i<=int(s.size());i++)
-        {
-            for(int j=i-1;j>=0;j--)
-            {
-                if(dp[j])
-                {
-                    string word = s.substr(j,i-j);
-                    if(wordDict.find(word)!= wordDict.end())
-                    {
-                        dp[i]=true;
-                        break; //next i
-                    }
-                }
-            }
+    for (int i = 1; i <= int(s.size()); i++) {
+      for (int j = i - 1; j >= 0; j--) {
+        if (dp[j]) {
+          string word = s.substr(j, i - j);
+          if (wordDict.find(word) != wordDict.end()) {
+            dp[i] = true;
+            break; // next i
+          }
         }
+      }
+    }
 
-        return dp[s.size()];
-	}
+    return dp[s.size()];
+  }
 };

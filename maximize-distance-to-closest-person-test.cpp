@@ -12,8 +12,7 @@
 
 using namespace std;
 
-TEST( MaximizeDistanceToClosestPerson, Test_nothing ) {
-}
+TEST(MaximizeDistanceToClosestPerson, Test_nothing) {}
 
 #if 0
 

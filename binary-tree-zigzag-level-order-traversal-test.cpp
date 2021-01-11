@@ -21,4 +21,3 @@ TEST(BinaryTreeZigZagLevelOrderTraversal, 3_9_20_null_null_15_7) {
   };
   EXPECT_EQ(expected, Solution().zigzagLevelOrder(root));
 }
-

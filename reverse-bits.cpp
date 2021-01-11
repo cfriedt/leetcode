@@ -13,8 +13,8 @@ public:
     };
     uint32_t r = 0;
 
-    for(uint8_t i = 0, shift = 28; i < 8; ++i, n >>=4, shift -= 4) {
-        r |= lut[n & 0xf] << shift;
+    for (uint8_t i = 0, shift = 28; i < 8; ++i, n >>= 4, shift -= 4) {
+      r |= lut[n & 0xf] << shift;
     }
 
     return r;
