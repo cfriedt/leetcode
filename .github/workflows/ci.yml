@@ -38,6 +38,9 @@ jobs:
             git checkout -b master origin/master
             git checkout ${REF}
         fi
+        # problem.py requires 'git config user.name' and 'git config user.email' to work
+        git config user.name 'GitHub Actions'
+        git config user.email 'actions@github.com'
         pytest .scripts/*_test.py
 
     - name: Setup C++ CEnvironment
