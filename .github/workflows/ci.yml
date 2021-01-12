@@ -14,6 +14,8 @@ jobs:
 
     env:
       PYTHONPATH: ${{ github.workspace }}/.scripts
+      # ideally there would be a simple way to append / prepend to the path outside of jobs, but no
+      PATH: /home/runner/.local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/opt/pipx_bin:/usr/share/rust/.cargo/bin:/home/runner/.config/composer/vendor/bin:/home/runner/.dotnet/tools:/snap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
     steps:
 
@@ -22,15 +24,24 @@ jobs:
 
     - name: Setup Python Environment
       run: |
-        sudo apt install -y python3-pytest
+        pip3 install --upgrade pip
+        pip3 install -r .scripts/requirements.txt
 
     - name: Test Python
       run: |
-        pytest-3 .scripts/*_test.py
+        # Both problem.py and problem_test.py assume that the 'master' branch is available
+        # but GitHub Actions only check out 1 ref (e.g. 'pull/289/merge', a GitHub-managed tag).
+        # Here we create the master branch if it does not already exist.
+        if [ "$(git branch --list master)" == "" ]; then
+            REF="$(git rev-parse HEAD)"
+            git fetch origin
+            git checkout -b master origin/master
+            git checkout ${REF}
+        fi
+        pytest .scripts/*_test.py
 
     - name: Setup C++ CEnvironment
       run: |
-        sudo apt-get update
         sudo apt install -y cmake clang clang-tidy gcovr
         sudo sh .scripts/build-and-install-libgtest-libraries.sh
 

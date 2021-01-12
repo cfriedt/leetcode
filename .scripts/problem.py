@@ -6,6 +6,7 @@
 
 from datetime import datetime
 import enum
+from git import Repo
 import os
 import re
 import sys
@@ -84,6 +85,7 @@ class Problem(object):
 
         # github attributes
         self._issue = args.issue
+        self._branch = 'issue/{}/{}'.format(args.issue, args.name)
 
         # problem attributes
         # self._leetcode_number = -1
@@ -192,6 +194,26 @@ class Problem(object):
 
             raise
 
+    def checkout_branch(self, create=True):
+        repo = Repo(os.getcwd())
+        git = repo.git
+
+        try:
+            # stash any uncommitted changes
+            git.add('*')
+            git.stash()
+        except:
+            pass
+
+        git.checkout('master')
+        git.fetch('-p')
+        git.pull()
+
+        if create:
+            git.checkout('-b', self._branch)
+        else:
+            git.checkout(self._branch)
+
 def new_problem():
     args = Problem.default_args()
 
@@ -219,6 +241,7 @@ def new_problem():
         args.problem_template += line
 
     p = Problem(args)
+    p.checkout_branch()
     p.create_impl_and_test()
 
     return p
