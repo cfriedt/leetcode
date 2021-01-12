@@ -17,6 +17,17 @@ import problem
 from problem import Problem
 from problem import Difficulty
 
+repo = Repo()
+assert(repo.bare == False)
+git = repo.git
+
+initial_branch = git.rev_parse('--abbrev-ref', 'HEAD')
+
+# HEAD indicates we're not on a branch
+if initial_branch == 'HEAD':
+    initial_branch = repo.head.commit.hexsha
+
+
 def test_init_happy_path():
     args = Problem.default_args()
     args.name = '3sum'
@@ -87,10 +98,6 @@ def test_init_invalid_name():
 
 def test_create_problem(monkeypatch):
 
-    repo = Repo(os.getcwd())
-    assert(repo.bare == False)
-    git = repo.git
-
     solution = \
         '''class Solution {
 public:
@@ -101,21 +108,21 @@ public:
 
 '''
 
-    my_stdin = 'TEST-foo-bar\n42\n3\n' + solution
+    my_stdin = 'foo-bar\n42\n3\n' + solution
     my_stdout = ''
 
     try:
-        git.branch('-D', 'issue/42/TEST-foo-bar')
+        git.branch('-D', 'issue/42/foo-bar')
     except:
         pass
 
     monkeypatch.setattr('sys.stdin', io.StringIO(my_stdin))
     p = problem.new_problem()
 
-    assert(p._name == 'TEST-foo-bar')
-    assert(p._camel == 'TESTFooBar')
+    assert(p._name == 'foo-bar')
+    assert(p._camel == 'FooBar')
     assert(p._issue == 42)
-    assert(p._branch == 'issue/42/TEST-foo-bar')
+    assert(p._branch == 'issue/42/foo-bar')
     assert(p._difficulty == Difficulty.HARD)
     assert(p._problem_template + '\n' == solution)
 
@@ -130,7 +137,7 @@ public:
     if not os.path.exists(test_cpp):
         io_fail = True
 
-    git.checkout('master')
+    git.checkout(initial_branch)
     git.branch('-D', p._branch)
 
     if io_fail:
@@ -154,7 +161,7 @@ public:
     # expected += 'Enter the GitHub issue number: '
     # expected += 'Enter the difficulty level (1=easy, 2=medium, 3=hard): '
     # expected += 'Enter the Solution template: '
-    ## this needs using capsys as a function, but it's already monkeypatch
+    # this needs using capsys as a function, but it's already monkeypatch
     # my_stdout = capsys.readouterr()
     # assert(my_stdout == expected)
 
@@ -169,25 +176,96 @@ public:
 
 def test_checkout_branch():
 
-    repo = Repo(os.getcwd())
-    assert(repo.bare == False)
-    git = repo.git
-
-    git.checkout('master')
-    assert('master' == '{}'.format(repo.active_branch))
+    try:
+        git.branch('-D', 'issue/42/foo-bar')
+    except:
+        pass
 
     args = Problem.default_args()
-    args.issue = 123
+    args.issue = 42
     args.name = 'foo-bar'
     p = Problem(args)
 
     p.checkout_branch()
-    branch_name = repo.active_branch
+    actual_branch_name = '{}'.format(repo.active_branch)
+    expected_branch_name = 'issue/{}/{}'.format(args.issue, args.name)
 
-    git.checkout('master')
+    git.checkout(initial_branch)
     try:
-        git.branch('-D', branch_name)
+        git.branch('-D', expected_branch_name)
     except:
         pass
 
-    assert('{}'.format(branch_name) == 'issue/{}/{}'.format(args.issue, args.name))
+    assert(actual_branch_name == expected_branch_name)
+
+
+def test_create_commit_message():
+
+    expected_msg = '''\
+Implement {}
+
+name: {}
+url: https://leetcode.com/problems/{}
+difficulty: {}
+
+time: {} ms
+time-rank: {} %
+time-complexity: {}
+
+space: {} MB
+space-rank: {} %
+space-complexity: {}
+
+Fixes #{}
+
+Signed-off-by: {} <{}>
+'''.format('foo-bar', 'foo-bar', 'foo-bar', 3, 0, 100, 'O(1)', 0, 100, 'O(1)', 42, problem.GIT_USER_NAME, problem.GIT_USER_EMAIL)
+
+    try:
+        git.branch('-D', 'issue/42/foo-bar')
+    except:
+        pass
+
+    p = problem.new_problem_args(
+        'foo-bar', 42, 3, 'class Solution {\npublic:\nint fooBar() {\nreturn 0;\n}\n};\n')
+    p._time = 0
+    p._time_rank = 100
+    p._time_complexity = 'O(1)'
+    p._space = 0
+    p._space_rank = 100
+    p._space_complexity = 'O(1)'
+
+    git.checkout(initial_branch)
+    git.branch('-D', 'issue/42/foo-bar')
+    os.remove('foo-bar.cpp')
+    os.remove('foo-bar-test.cpp')
+
+    actual_msg = p.create_commit_message()
+
+    assert(actual_msg == expected_msg)
+
+
+def test_commit_solution(monkeypatch):
+
+    my_stdin = '0\n100\nO(1)\n0\n100\nO(1)\n'
+
+    try:
+        git.branch('-D', 'issue/42/foo-bar')
+    except:
+        pass
+
+    monkeypatch.setattr('sys.stdin', io.StringIO(my_stdin))
+    p = problem.new_problem_args(
+        'foo-bar', 42, 3, 'class Solution {\npublic:\nint fooBar() {\nreturn 0;\n}\n};\n')
+
+    try:
+        git.add('foo-bar.cpp')
+        git.add('foo-bar-test.cpp')
+        problem.commit_solution()
+    except Exception as e:
+        git.checkout(initial_branch)
+        git.branch('-D', p._branch)
+        raise e
+
+    git.checkout(initial_branch)
+    git.branch('-D', p._branch)

@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+import sys
+
+import problem
+
+if __name__ == '__main__':
+    problem.commit_solution()
+    sys.exit(0)
