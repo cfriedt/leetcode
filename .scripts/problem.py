@@ -132,16 +132,18 @@ class Problem(object):
                 f.write(' */\n')
                 f.write('\n')
 
+                # write problem metadata
+                f.write('// clang-format off\n')
+                f.write('// name: {}\n'.format(self._name))
+                f.write('// url: {}\n'.format(self._url))
+                f.write('// difficulty: {}\n'.format(self._difficulty))
+                f.write('// clang-format on\n')
+                f.write('\n')
+
                 # boilerplate C++
                 f.write('#include <vector>\n'.format(self._name))
                 f.write('\n')
                 f.write('using namespace std;\n'.format(self._url))
-                f.write('\n')
-
-                # write problem metadata
-                f.write('// name: {}\n'.format(self._name))
-                f.write('// url: {}\n'.format(self._url))
-                f.write('// difficulty: {}\n'.format(self._difficulty))
                 f.write('\n')
 
                 # write the problem template
