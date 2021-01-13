@@ -1,4 +1,3 @@
 ignore:
   - "util/"
   - "*-test.cpp"
-

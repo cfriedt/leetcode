@@ -6,3 +6,15 @@
 .*project
 .settings/
 __pycache__/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+.ninja_deps
+.ninja_log
+CTestTestfile.cmake
+build.ninja
+rules.ninja
+*.capture
+*.info
+*.total
+Testing/
