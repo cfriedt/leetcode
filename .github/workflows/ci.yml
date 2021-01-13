@@ -45,7 +45,7 @@ jobs:
 
     - name: Setup C++ CEnvironment
       run: |
-        sudo apt install -y cmake clang clang-tidy gcovr
+        sudo apt install -y cmake gcovr
         sudo sh .scripts/build-and-install-libgtest-libraries.sh
 
     - name: Build C++
