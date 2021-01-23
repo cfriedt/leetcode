@@ -343,6 +343,7 @@ def commit_solution():
         for line in f.readlines():
             if line.startswith('// difficulty: '):
                 args.difficulty = line.replace('// difficulty: ', '')
+                break
 
     print('Enter the time (ms): ', end='', flush=True)
     for line in sys.stdin:
@@ -351,7 +352,7 @@ def commit_solution():
 
     print('Enter the time-rank (%): ', end='', flush=True)
     for line in sys.stdin:
-        args.time = float(line.rstrip())
+        args.time_rank = float(line.rstrip())
         break
 
     print('Enter the time-complexity: ', end='', flush=True)
