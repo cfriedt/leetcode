@@ -17,67 +17,59 @@ using namespace std;
 
 class Solution {
 public:
-  int FC(unordered_map<int, int> &dp, const vector<int> &coins, int n) {
+  int coinChange(vector<int> &coins, int amount) {
+/*
+If we look at the lowest coin value we could possibly have, 1,
+then it's easy to turn this problem into a 1-D DP problem, where
+we have an array of possible amounts in the range [0,amount].
 
-    auto it = dp.find(n);
-    if (dp.end() != it) {
-      return it->second;
+A base case is FC(0) - fewest coins to make $0 is obviously 0.
+
+The recursion is:
+FC(n) = 0, if n <= 0
+      = 1, if n in coins
+      = 1 + min(FC(n - c)), for c in coins
+      = inf, if no coins can sum up to amount n
+*/
+    // we choose inf to be INT_MAX because below we add 1 to dp[.]. If the value
+    // were INT_MAX, then it would roll over to INT_MIN.
+    constexpr int inf = INT_MAX - 1;
+    vector<int> dp(amount + 1, inf);
+    dp[0] = 0;
+
+/*
+say coins = [1, 2, 5], amount = 11
+n  c  FC(n-c) min  FC(n)  comment
+0  -    -     -    0      zero coins for amount zero
+1  -    -     -    1      1 coin for anything in coins
+2  -    -     -    1      "
+5  -    -     -    1      "
+6  1    1     2    2      5 + 1 => 2 coins
+6  2   inf    2    2      '
+6  5    1     2    2      '
+7  1    2     3    3      5 + 1 + 1 => 3 coins
+7  2    1     2    2      5 + 2 => 2 coins
+7  5   inf    2    2      '
+...
+*/
+
+    // O(N)
+    for (int n = 1; n <= amount; ++n) {
+      // O(1) - maximum number of different types of coins is 12
+      for (auto& c: coins) {
+        if (n - c >= 0) {
+          // choose inf to avoid integer rollover here.
+          dp[n] = min(dp[n], 1 + dp[n - c]);
+        }
+      }
     }
 
-    int mmin = INT_MAX;
-    for (auto &c : coins) {
-      if (c > n) {
-        continue;
-      }
-
-      int r = FC(dp, coins, n - c);
-      if (r != -1) {
-        mmin = min(mmin, r);
-      }
-    }
-
-    if (mmin == INT_MAX) {
-      dp[n] = -1;
+    if (dp[amount] == inf) {
+      // we were unable to arrive at amount using any sum from any coins
       return -1;
     }
 
-    dp[n] = 1 + mmin;
-    return 1 + mmin;
-  }
-
-  int coinChange(vector<int> &coins, int amount) {
-    /*
-    Let's think about a greedy algorithm first
-
-    if we first sort the coins, then start at the higher end
-    we take off the largest amount possible until amount is less than the
-    highest-valued coin.
-
-    that would certainly minimize the number of coins we needed to
-    give out in change.
-
-    Is there a possibility that we might not be able to provide exact change
-    using the greedy algorithm? Maybe?
-
-    An alternative is to start at the other end - so a not greedy algorithm.
-
-    We could potentially create an unordered_map<int,int> where the key is
-    the amount and the value is the fewest coins for amount n. We could start
-    out with FC(0) = 0, and for each coin, say FC(coin[i]) = 1. Then with the
-    recursion, we would be looking at FC(n) = min(FC(n), FC(n - coins[i])), for
-    all i. Use recursion first, and then potentially look at optimizing with a
-    stack. This would be kind of like a depth-first search.
-
-    Since amount is limited to 10000, it might be a viable option to go bottom
-    up.
-    */
-
-    unordered_map<int, int> dp;
-    dp[0] = 0;
-    for (auto &c : coins) {
-      dp[c] = 1;
-    }
-
-    return FC(dp, coins, amount);
+    // the fewest coins to get amount, or FC(n)
+    return dp[amount];
   }
 };
