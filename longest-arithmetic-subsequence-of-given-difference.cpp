@@ -10,66 +10,38 @@
 // difficulty: 2
 // clang-format on
 
-#include <climits>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 using namespace std;
-
-template <typename T> ostream &operator<<(ostream &os, const vector<T> &v) {
-  os << "[";
-  for (size_t i = 0, N = v.size(); i < N; ++i) {
-    os << v[i];
-    if (i < N - 1) {
-      os << ", ";
-    }
-  }
-  os << "]";
-  return os;
-}
 
 class Solution {
 public:
   int longestSubsequence(vector<int> &arr, int difference) {
     /*
-    Let's say that arr is length 1, e.g. A = [1], and difference is -42.
+    If we proceed from the 0th element in arr to the end
+    we can check if arr[i] - difference already exists in O(1) time
+    by using an unordered_map<int,int>, where the key is the
+    value from arr[j], 0 <= j < i, and the value is the length
+    of the subsequence finishing with arr[j].
 
-    Would the longest subsequence be 1 as a base case? What if A had length
-    0? Would the longest subsequence be 0 as a base case?
+    If the key exists, then simply add a one to it for a new entry, arr[i].
+    if the key does not exist, then simply set it to one (the same as adding one
+    to a value not already in the map with the [] operator).
 
-    Say A = [1,2,3,4] and difference == 1
+    Keep track of the maximum subsequence length with a separate variable.
 
-    i  j  A[i]  A[j]  d  LS(i)  LS(j)
-    ---------------------------------
-    0  -  1     -     -  1      -
-    1  0  2     1     1  2      1
-    2  0  3     1     2  1      1
-    2  1  3     2     1  3      2
-    3  0  4     1     3  1      1
-    3  1  4     2     2  1      2
-    3  2  4     3     1  4      3
-
-    LS(i) = 1 + max(LS(j)), 0 < j < i and d = A[i] - A[j] == difference
-          = 1 if no such j exists
-
-    There is a problem though, in that we still need to remember the max
-    of LS(.), because the max will not necessarily be at the last position.
-    To solve that, maintain a max_len variable initialized to INT_MIN.
+    O(N)
     */
-    int N = arr.size();
-    vector<int> dp(N, 1);
-    int max_len = INT_MIN;
 
-    for (int i = 1; i < N; ++i) {
-      for (int j = 0; j < i; ++j) {
-        if (arr[i] - arr[j] == difference) {
-          dp[i] = max(dp[i], 1 + dp[j]);
-        }
-      }
-      max_len = max(max_len, dp[i]);
+    int max_len = 0;
+    unordered_map<int, int> dp;
+
+    for (auto &a : arr) {
+      dp[a] = dp[a - difference] + 1;
+      max_len = max(max_len, dp[a]);
     }
-
-    // cout << "arr: " << arr << ", difference: " << difference << endl;
-    // cout << "dp: " << dp << endl;
 
     return max_len;
   }

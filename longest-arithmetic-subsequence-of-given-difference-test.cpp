@@ -34,7 +34,6 @@ TEST(LongestArithmeticSubsequenceOfGivenDifference, 3_4_n3_n2_n4__n5) {
   EXPECT_EQ(2, Solution().longestSubsequence(arr, difference));
 }
 
-#if 0
 TEST(LongestArithmeticSubsequenceOfGivenDifference, huge__5692) {
   auto arr = vector<int>{
       1806,  -6771, -1534,  -5016, 6991,  149,   -615,  1787,   -1311,
@@ -11149,7 +11148,6 @@ TEST(LongestArithmeticSubsequenceOfGivenDifference, huge__5692) {
       -2820, -6121, 9378,   6091,  7589,  -9460, -1655, -9614,  7073,
       6444,  -5651, -4411,  -4891, -6234, 8829,  -3465, 2642,   7110,
       -1391};
-  int difference = 15;
-  EXPECT_EQ(1, Solution().longestSubsequence(arr, difference));
+  int difference = 5692;
+  EXPECT_EQ(4, Solution().longestSubsequence(arr, difference));
 }
-#endif
