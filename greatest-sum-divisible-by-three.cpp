@@ -10,6 +10,7 @@
 // difficulty: 2
 // clang-format on
 
+#include <array>
 #include <climits>
 #include <vector>
 

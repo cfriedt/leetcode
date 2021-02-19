@@ -7,9 +7,11 @@
 #ifndef UTIL_TREENODE_HPP_
 #define UTIL_TREENODE_HPP_
 
+#if 0
 #if !defined(GTEST_INCLUDE_GTEST_GTEST_H_)
 #error TreeNode.hpp should only be included in test cpp files
 #endif /* ! defined( GTEST_INCLUDE_GTEST_GTEST_H_ ) */
+#endif
 
 #include <string>
 

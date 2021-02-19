@@ -46,7 +46,7 @@ TEST(RandomPickWithWeight, Test_1_3_1) {
     }
   }
 
-  EXPECT_GT(n1s, size_t(0));
+  EXPECT_GT(n1s, 0);
 }
 
 vector<float> createHistogram(const vector<int> &w) {
@@ -102,7 +102,7 @@ TEST(RandomPickWithWeight, Test_w_size_10000_with_elements_le_10000) {
   for (size_t i = 0; i < 10000; i++) {
     int index = soln.pickIndex();
     ASSERT_GE(index, 0);
-    ASSERT_LT(index, int(w.size()));
+    ASSERT_LT(index, w.size());
     results[index]++;
   }
 
