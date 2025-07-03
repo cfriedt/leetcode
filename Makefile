@@ -15,7 +15,7 @@ GCOVFLAGS :=
 GCOVRFLAGS :=
 CTIDYFLAGS :=
 
-CXXFLAGS += -Wall -Werror -Wextra -g -O0 -std=c++14
+CXXFLAGS += -Wall -Werror -Wextra -g -O0 -std=c++17
 
 # gcov
 CXXFLAGS += -fprofile-arcs -ftest-coverage
@@ -54,6 +54,9 @@ all: $(EXE)
 
 %-test: %-test.cpp %.cpp Makefile
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $< $(LDLIBS)
+
+%-check: %-test
+	./$<
 
 clean:
 	rm -f $(EXE) *-test *.gcno *.gcov *.gcda *.clangtidy
