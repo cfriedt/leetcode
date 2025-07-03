@@ -11,6 +11,7 @@
 // clang-format on
 
 #include <climits>
+#include <array>
 #include <vector>
 
 using namespace std;

@@ -8,6 +8,7 @@
 // url: https://leetcode.com/problems/n-queens-ii
 // difficulty: 3
 
+#include <array>
 #include <unordered_set>
 #include <vector>
 

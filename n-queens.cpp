@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include <array>
 #include <unordered_set>
 #include <vector>
 
